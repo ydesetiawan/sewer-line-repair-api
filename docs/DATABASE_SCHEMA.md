@@ -440,5 +440,38 @@ Review.verified.recent
 
 ---
 
-**Last Updated:** November 6, 2025
+## Active Storage Integration
+
+As of November 6, 2025, the GalleryImage model has been updated to use **Active Storage** for file uploads.
+
+### Additional Tables (Active Storage)
+
+**active_storage_blobs:**
+- Stores file metadata (filename, content_type, byte_size, checksum, etc.)
+
+**active_storage_attachments:**
+- Polymorphic join table linking files to any model
+- Links GalleryImage records to their image files
+
+**active_storage_variant_records:**
+- Caches processed image variants (thumbnails, resized versions)
+
+### GalleryImage Changes
+
+**Removed columns:**
+- `image_url` - No longer storing URLs as strings
+- `thumbnail_url` - No longer storing URLs as strings
+
+**New functionality:**
+- `has_one_attached :image` - Main image file attachment
+- `has_one_attached :thumbnail` - Optional separate thumbnail
+- Auto-generated variants for different sizes
+- File validation (type, size)
+
+See `ACTIVE_STORAGE_MIGRATION.md` for complete details.
+
+---
+
+**Last Updated:** November 6, 2025  
+**Active Storage:** ✅ Enabled
 

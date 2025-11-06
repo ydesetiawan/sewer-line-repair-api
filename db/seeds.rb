@@ -143,17 +143,32 @@ companies.each do |company|
 end
 
 puts "Creating gallery images..."
+puts "Note: Gallery images created without files attached. Use Active Storage to attach actual images."
 companies.each do |company|
   image_types = %w[before after work team equipment]
   rand(3..7).times do |i|
-    company.gallery_images.create!(
+    gallery_image = company.gallery_images.new(
       title: ["Project #{i+1}", "Recent Work", "Completed Job", "Service Call"].sample,
       description: "Professional sewer line repair completed successfully",
-      image_url: "https://placehold.co/800x600/png?text=Gallery+Image+#{i+1}",
-      thumbnail_url: "https://placehold.co/200x150/png?text=Thumb+#{i+1}",
       image_type: image_types.sample,
       position: i
     )
+
+    # Create a simple placeholder image file for demo purposes
+    require 'open-uri'
+    begin
+      # Download placeholder image
+      image_file = URI.open("https://placehold.co/800x600/png?text=Gallery+Image+#{i+1}")
+      gallery_image.image.attach(
+        io: image_file,
+        filename: "gallery_#{company.id}_#{i+1}.png",
+        content_type: 'image/png'
+      )
+      gallery_image.save!
+    rescue => e
+      # If download fails, just create without attachment
+      puts "  Skipping image download: #{e.message}"
+    end
   end
 end
 

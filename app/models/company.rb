@@ -1,4 +1,8 @@
 class Company < ApplicationRecord
+  # Geocoding
+  geocoded_by :full_address
+  after_validation :geocode, if: :should_geocode?
+
   # Associations
   belongs_to :city
   has_one :state, through: :city
@@ -37,9 +41,17 @@ class Company < ApplicationRecord
     save
   end
 
+  def full_address
+    [street_address, city&.name, state&.name, zip_code].compact.join(", ")
+  end
+
   private
 
   def generate_slug
     self.slug = name.parameterize if name.present? && slug.blank?
+  end
+
+  def should_geocode?
+    (latitude.blank? || longitude.blank?) && street_address.present?
   end
 end

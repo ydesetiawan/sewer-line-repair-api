@@ -21,6 +21,15 @@ gem "rswag-api"
 gem "rswag-ui"
 gem "ostruct"
 
+# JSON:API serialization
+gem "jsonapi-serializer"
+
+# Pagination
+gem "kaminari"
+
+# Geocoding
+gem "geocoder"
+
 group :development, :test do
   # RSpec testing framework
   gem "rspec-rails", "~> 7.1"

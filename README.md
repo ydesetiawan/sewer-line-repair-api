@@ -1,127 +1,78 @@
 # Sewer Line Repair API
 
-All documentation has been moved to the `docs/` folder for better organization.
-
-See [`docs/README.md`](docs/README.md) for the documentation index and links to all guides.
+All documentation lives in the `docs/` folder for easy reference.
+See [`docs/README.md`](docs/README.md) for the documentation index and full guides.
 
 ## System Requirements
 
-* **Ruby version**: 3.4.7
-* **Rails version**: 8.1.1
+* **Ruby**: 3.4.7
+* **Rails**: 8.1.1
 * **Database**: PostgreSQL
 
-## Setup Instructions
+## Quick Setup
 
-### 1. Install Dependencies
+Install dependencies:
 
 ```bash
 bundle install
 ```
 
-### 2. Database Setup
-
-Create the databases:
-```bash
-rails db:create
-```
-
-Run migrations:
-```bash
-rails db:migrate
-```
-
-Seed the database (optional):
-```bash
-rails db:seed
-```
-
-### 3. Start the Server
+Create and migrate the database:
 
 ```bash
-rails server
+bin/rails db:create db:migrate
 ```
 
-The API will be available at `http://localhost:3000`
-
-## Running Tests
+Seed sample data (optional):
 
 ```bash
-rails test
+bin/rails db:seed
 ```
 
-## Key Features
-
-This is a Rails API-only application configured with:
-
-* **PostgreSQL** database
-* **Solid Cache** - Database-backed Rails cache
-* **Solid Queue** - Database-backed Active Job backend
-* **Solid Cable** - Database-backed Action Cable backend
-* **CORS** support (commented out by default in Gemfile)
-* **Kamal** - For deployment as a Docker container
-* **Brakeman** - Security vulnerability scanner
-* **RuboCop** - Ruby code style checker
-* **Docker** support included
-
-## API Development
-
-### Generating a Resource
-
-To create a new API resource (e.g., for sewer repairs):
+Start the server (development):
 
 ```bash
-rails generate scaffold Repair address:string status:string description:text estimated_cost:decimal --api
-rails db:migrate
+bin/rails server
 ```
 
-### Enabling CORS
+API Base URL: `http://localhost:3000` (or your configured host/port)
 
-If you need to allow cross-origin requests, uncomment this line in `Gemfile`:
+## Tests
 
-```ruby
-gem "rack-cors"
-```
+This project uses RSpec for tests. Run the test suite with:
 
-Then run `bundle install` and configure CORS in `config/initializers/cors.rb`.
-
-## Deployment
-
-This project includes Kamal for easy Docker-based deployment. Configuration files:
-
-* `config/deploy.yml` - Kamal deployment configuration
-* `.kamal/secrets` - Environment secrets (excluded from git)
-* `Dockerfile` - Docker container configuration
-
-Deploy with:
 ```bash
-kamal deploy
+bundle exec rspec
 ```
 
-## Code Quality
+## Code Quality & Security
 
-Run RuboCop for style checking:
+- Run RuboCop:
+
 ```bash
 bundle exec rubocop
 ```
 
-Run Brakeman for security scanning:
+- Run Brakeman (security scan):
+
 ```bash
 bundle exec brakeman
 ```
 
-## Additional Resources
+## Project Notes
 
-* [Rails API Documentation](https://guides.rubyonrails.org/api_app.html)
-* [Rails 8.1 Release Notes](https://guides.rubyonrails.org/8_1_release_notes.html)
-* [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+This repository is a minimal Rails API application focused on:
+- REST API endpoints (JSON:API)
+- Active Record with PostgreSQL
+- Active Storage for file attachments
+- RSpec for testing
+- Swagger (rswag) for API documentation
+- RuboCop and Brakeman for code quality and security
+
+For all developer guides, API reference, and architecture docs, see `docs/README.md`.
 
 ---
 
-## 📚 More Documentation
+For full details, tutorials, and advanced configuration refer to the docs directory:
 
-- **[QUICK_START.md](docs/QUICK_START.md)** - Get started in 3 steps
-- **[DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Development guide and best practices
-- **[API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)** - API structure and examples
-- **[CHECKLIST.md](docs/CHECKLIST.md)** - Setup verification checklist
-- **[UPGRADE_SUMMARY.md](docs/UPGRADE_SUMMARY.md)** - Upgrade details
-- **[INDEX.md](docs/INDEX.md)** - Complete documentation index
+- `docs/README.md` — documentation index

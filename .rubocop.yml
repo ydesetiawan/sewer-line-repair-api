@@ -1,0 +1,63 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'config/environments/**/*'
+    - 'config/initializers/**/*'
+
+# Increase line length for API responses and tests
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'spec/**/*'
+
+# Allow longer methods in specs
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - 'spec/**/*'
+
+# Allow longer blocks in specs
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/**/*'
+
+# Rails-specific configurations
+Rails:
+  Enabled: true
+
+# RSpec-specific configurations
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 4
+
+# Style preferences
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19_no_mixed_keys

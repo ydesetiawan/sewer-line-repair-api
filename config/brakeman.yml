@@ -1,0 +1,103 @@
+# Brakeman configuration file
+# For more options, see: https://brakemanscanner.org/docs/options/
+
+# Application path (optional, defaults to current directory)
+app_path: "."
+
+# Output format: text, html, json, tabs, csv, junit
+output_format: text
+
+# Rails version (auto-detected if not specified)
+# rails_version: "8.1.1"
+
+# Minimum confidence level: 0 (high), 1 (medium), 2 (weak/low)
+min_confidence: 2
+
+# Report format options
+report_routes: true
+report_progress: true
+
+# Paths to skip (optional)
+skip_files:
+  - "spec/**/*"
+  - "db/migrate/**/*"
+  - "config/environments/**/*"
+
+# Specific checks to ignore (optional)
+# ignore_warnings:
+#   - warning_type: "SQL Injection"
+#     warning_code: 0
+#     fingerprint: "abc123..."
+
+# Checks to run (all enabled by default)
+# Available checks:
+# - BasicAuth
+# - ContentTag
+# - CreateWith
+# - CrossSiteScripting
+# - DefaultRoutes
+# - Deserialize
+# - DetailedExceptions
+# - DigestDoS
+# - DynamicFinders
+# - EscapeFunction
+# - Evaluation
+# - Execute
+# - FileAccess
+# - FileDisclosure
+# - FilterSkipping
+# - ForgerySetting
+# - HeaderDoS
+# - I18nXSS
+# - JRubyXML
+# - JSONEncoding
+# - JSONParsing
+# - LinkTo
+# - LinkToHref
+# - MailTo
+# - MassAssignment
+# - MimeTypeDoS
+# - ModelAttrAccessible
+# - ModelAttributes
+# - ModelSerialize
+# - NestedAttributes
+# - NestedAttributesBypass
+# - NumberToCurrency
+# - PermitAttributes
+# - QuoteTableName
+# - Redirect
+# - RegexDoS
+# - Render
+# - RenderDoS
+# - RenderInline
+# - ResponseSplitting
+# - RouteDoS
+# - SQL
+# - SQLCVEs
+# - SSLVerify
+# - SafeBufferManipulation
+# - SanitizeMethods
+# - SelectTag
+# - SelectVulnerability
+# - Send
+# - SendFile
+# - SessionManipulation
+# - SessionSettings
+# - SimpleFormat
+# - SingleQuotes
+# - SkipBeforeFilter
+# - StripTags
+# - SymbolDoSCVE
+# - TranslateBug
+# - UnsafeReflection
+# - UnscopedFind
+# - ValidationRegex
+# - VerbConfusion
+# - WithoutProtection
+# - XMLDoS
+# - YAMLParsing
+
+# Exit with error code if warnings found
+# exit_on_warn: true
+# exit_on_error: true
+

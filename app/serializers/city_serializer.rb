@@ -1,32 +1,14 @@
-# frozen_string_literal: true
-
 class CitySerializer
   include JSONAPI::Serializer
 
   set_type :city
   set_id :id
 
-  attributes :name, :slug, :latitude, :longitude
+  attributes :name, :slug, :latitude, :longitude, :created_at, :updated_at
 
-  # Conditional attribute for company count
-  attribute :companies_count, if: proc { |_, params|
-    params && params[:include_counts]
-  } do |object|
-    object.companies.count
-  end
+  belongs_to :state
 
-  # Relationships with explicit serializers
-  belongs_to :state, serializer: :state
-
-  # Meta
-  meta do |object, params|
-    meta_hash = {}
-    meta_hash[:full_name] = object.full_name if params && params[:include_full_name]
-    meta_hash
-  end
-
-  # Self link
-  link :self do |object|
-    "/api/v1/cities/#{object.id}"
+  link :self do |city|
+    "/api/v1/cities/#{city.id}"
   end
 end

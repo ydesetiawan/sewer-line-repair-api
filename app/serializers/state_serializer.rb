@@ -1,18 +1,15 @@
-# frozen_string_literal: true
-
 class StateSerializer
   include JSONAPI::Serializer
 
   set_type :state
   set_id :id
 
-  attributes :name, :code, :slug
+  attributes :name, :code, :slug, :created_at, :updated_at
 
-  # Relationships with explicit serializers
-  belongs_to :country, serializer: :country
+  belongs_to :country
+  has_many :cities
 
-  # Self link
-  link :self do |object|
-    "/api/v1/states/#{object.id}"
+  link :self do |state|
+    "/api/v1/states/#{state.id}"
   end
 end

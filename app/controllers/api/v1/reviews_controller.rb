@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Api
   module V1
     class ReviewsController < BaseController
@@ -7,50 +5,66 @@ module Api
 
       # GET /api/v1/companies/:company_id/reviews
       def index
-        @reviews = @company.reviews
+        reviews = @company.reviews
 
         # Apply filters
-        @reviews = @reviews.verified if params[:verified_only] == 'true'
-        @reviews = @reviews.where('rating >= ?', params[:min_rating].to_i) if params[:min_rating].present?
+        reviews = filter_by_verification(reviews)
+        reviews = filter_by_rating(reviews)
 
         # Apply sorting
-        sort_param = params[:sort] || '-review_date'
-        direction = sort_param.start_with?('-') ? 'DESC' : 'ASC'
-        field = sort_param.gsub(/^-/, '')
-
-        @reviews = case field
-                   when 'review_date'
-                     @reviews.order("review_date #{direction}")
-                   when 'rating'
-                     @reviews.order("rating #{direction}")
-                   else
-                     @reviews.order('review_date DESC')
-                   end
-
-        # Paginate
-        @reviews = @reviews.page(page_params[:page]).per(page_params[:per_page])
+        reviews = apply_sorting(reviews)
 
         # Calculate rating distribution
-        rating_dist = @company.reviews.group(:rating).count
-        rating_distribution = (1..5).index_with { |r| rating_dist[r] || 0 }
+        rating_distribution = calculate_rating_distribution(@company.reviews)
 
-        options = {
-          meta: {
-            pagination: pagination_meta(@reviews),
-            rating_distribution: rating_distribution
-          },
-          links: pagination_links(@reviews, "/api/v1/companies/#{@company.id}/reviews")
-        }
-
-        render json: ReviewSerializer.new(@reviews, options).serializable_hash
+        render_jsonapi_collection(
+          reviews,
+          meta: { rating_distribution: rating_distribution }
+        )
       end
 
       private
 
       def set_company
-        @company = Company.find(params[:company_id])
-      rescue ActiveRecord::RecordNotFound
-        render_not_found('Company not found')
+        @company = Company.find_by(id: params[:company_id])
+        render_error('Company not found', :not_found) unless @company
+      end
+
+      def filter_by_verification(reviews)
+        return reviews unless params[:verified_only] == 'true'
+
+        reviews.where(verified_review: true)
+      end
+
+      def filter_by_rating(reviews)
+        return reviews if params[:min_rating].blank?
+
+        min_rating = params[:min_rating].to_f
+        reviews.where('rating >= ?', min_rating) if min_rating.positive?
+      end
+
+      def apply_sorting(reviews)
+        sort_param = params[:sort] || '-review_date'
+
+        case sort_param
+        when 'rating', '-rating'
+          reviews.order(rating: sort_param.start_with?('-') ? :desc : :asc)
+        when 'review_date', '-review_date'
+          reviews.order(review_date: sort_param.start_with?('-') ? :desc : :asc)
+        else
+          reviews.order(review_date: :desc)
+        end
+      end
+
+      def calculate_rating_distribution(reviews)
+        distribution = reviews.group(:rating).count
+        {
+          '5': distribution[5] || 0,
+          '4': distribution[4] || 0,
+          '3': distribution[3] || 0,
+          '2': distribution[2] || 0,
+          '1': distribution[1] || 0
+        }
       end
     end
   end

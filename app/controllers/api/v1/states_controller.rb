@@ -1,73 +1,82 @@
-# frozen_string_literal: true
-
 module Api
   module V1
     class StatesController < BaseController
       # GET /api/v1/states/:state_slug/companies
       def companies
-        @state = State.find_by(slug: params[:state_slug]) ||
-                 State.find_by(code: params[:state_slug].upcase)
+        state = State.find_by(slug: params[:state_slug])
 
-        return render_not_found('State not found') unless @state
+        unless state
+          render_error('State not found', :not_found, code: 'state_not_found')
+          return
+        end
 
-        # Get companies in this state's cities
-        city_ids = @state.cities.pluck(:id)
-        @companies = Company.where(city_id: city_ids).includes(:city, :service_categories)
+        companies = Company.joins(:city)
+                           .where(cities: { state_id: state.id })
+                           .includes(:city, :state, :country, :service_categories)
 
         # Apply filters
-        if params[:city].present?
-          city = @state.cities.find_by(slug: params[:city].parameterize)
-          @companies = @companies.where(city_id: city.id) if city
-        end
+        companies = filter_by_city(companies)
+        companies = filter_by_service_category(companies)
+        companies = filter_by_verification(companies)
+        companies = filter_by_rating(companies)
 
-        if params[:service_category].present?
-          category = ServiceCategory.find_by(slug: params[:service_category])
-          if category
-            @companies = @companies.joins(:company_services)
-                                   .where(company_services: { service_category_id: category.id })
-          end
-        end
+        # Apply sorting
+        companies = apply_sorting(companies)
 
-        @companies = @companies.where(verified_professional: true) if params[:verified_only] == 'true'
-        @companies = @companies.where('average_rating >= ?', params[:min_rating].to_f) if params[:min_rating].present?
-
-        # Sorting
-        sort_param = params[:sort] || 'name'
-        direction = sort_param.start_with?('-') ? 'DESC' : 'ASC'
-        field = sort_param.gsub(/^-/, '')
-
-        @companies = case field
-                     when 'rating'
-                       @companies.order("average_rating #{direction}")
-                     when 'name'
-                       @companies.order("name #{direction}")
-                     else
-                       @companies.order(:name)
-                     end
-
-        # Paginate
-        @companies = @companies.page(page_params[:page]).per(page_params[:per_page])
-
-        # Parse includes
-        includes = parse_includes(params[:include])
-
-        options = {
-          include: includes,
+        render_jsonapi_collection(
+          companies,
           meta: {
             state: {
-              id: @state.id.to_s,
-              name: @state.name,
-              code: @state.code,
-              slug: @state.slug,
-              total_companies: Company.where(city_id: city_ids).count,
-              total_cities: @state.cities.count
-            },
-            pagination: pagination_meta(@companies)
-          },
-          links: pagination_links(@companies, "/api/v1/states/#{@state.slug}/companies")
-        }
+              id: state.id,
+              name: state.name,
+              code: state.code,
+              slug: state.slug
+            }
+          }
+        )
+      end
 
-        render json: CompanySerializer.new(@companies, options).serializable_hash
+      private
+
+      def filter_by_city(companies)
+        return companies if params[:city].blank?
+
+        companies.where('cities.slug = ? OR cities.name ILIKE ?', params[:city], params[:city])
+      end
+
+      def filter_by_service_category(companies)
+        return companies if params[:service_category].blank?
+
+        companies.joins(:service_categories).where(
+          'service_categories.slug = ? OR service_categories.name ILIKE ?',
+          params[:service_category], params[:service_category]
+        ).distinct
+      end
+
+      def filter_by_verification(companies)
+        return companies unless params[:verified_only] == 'true'
+
+        companies.where(verified_professional: true)
+      end
+
+      def filter_by_rating(companies)
+        return companies if params[:min_rating].blank?
+
+        min_rating = params[:min_rating].to_f
+        companies.where('average_rating >= ?', min_rating) if min_rating.positive?
+      end
+
+      def apply_sorting(companies)
+        sort_param = params[:sort] || 'name'
+
+        case sort_param
+        when 'rating', '-rating'
+          companies.order(average_rating: sort_param.start_with?('-') ? :desc : :asc)
+        when 'name', '-name'
+          companies.order(name: sort_param.start_with?('-') ? :desc : :asc)
+        else
+          companies.order(name: :asc)
+        end
       end
     end
   end

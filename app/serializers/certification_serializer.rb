@@ -1,19 +1,15 @@
-# frozen_string_literal: true
-
 class CertificationSerializer
   include JSONAPI::Serializer
 
   set_type :certification
   set_id :id
 
-  attributes :certification_name, :issuing_organization, :issue_date, :expiry_date,
-             :certificate_number, :certificate_url, :created_at
+  attributes :certification_name, :issuing_organization, :certificate_number,
+             :issue_date, :expiry_date, :certificate_url, :created_at, :updated_at
 
-  # Relationships
-  belongs_to :company, serializer: :company
+  belongs_to :company
 
-  # Self link
-  link :self do |object|
-    "/api/v1/certifications/#{object.id}"
+  link :self do |certification|
+    "/api/v1/companies/#{certification.company_id}/certifications/#{certification.id}"
   end
 end

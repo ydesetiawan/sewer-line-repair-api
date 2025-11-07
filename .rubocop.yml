@@ -18,6 +18,8 @@ AllCops:
     - 'config/environments/**/*'
     - 'config/initializers/**/*'
 
+
+
 # Increase line length for API responses and tests
 Layout/LineLength:
   Max: 120

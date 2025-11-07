@@ -1,119 +1,100 @@
-# frozen_string_literal: true
-
 module Api
   module V1
     class BaseController < ApplicationController
-      # JSON:API content type
-      before_action :set_jsonapi_content_type
-
-      # Pagination helpers
-      def pagination_meta(collection)
-        {
-          current_page: collection.current_page,
-          per_page: collection.limit_value,
-          total_pages: collection.total_pages,
-          total_count: collection.total_count,
-          has_next: collection.next_page.present?,
-          has_prev: collection.prev_page.present?
-        }
-      end
-
-      def pagination_links(collection, base_url)
-        {
-          self: "#{base_url}?page=#{collection.current_page}",
-          first: "#{base_url}?page=1",
-          prev: collection.prev_page ? "#{base_url}?page=#{collection.prev_page}" : nil,
-          next: collection.next_page ? "#{base_url}?page=#{collection.next_page}" : nil,
-          last: "#{base_url}?page=#{collection.total_pages}"
-        }.compact
-      end
-
-      # Error rendering
-      def render_jsonapi_error(status:, code:, title:, detail:, source: nil, meta: nil)
-        error = {
-          status: status.to_s,
-          code: code,
-          title: title,
-          detail: detail
-        }
-        error[:source] = source if source
-        error[:meta] = meta if meta
-
-        render json: { errors: [error] }, status: status
-      end
-
-      def render_not_found(detail = 'Resource not found')
-        render_jsonapi_error(
-          status: 404,
-          code: 'not_found',
-          title: 'Not Found',
-          detail: detail
-        )
-      end
-
-      def render_no_results(suggestions: [])
-        render_jsonapi_error(
-          status: 404,
-          code: 'no_results',
-          title: 'No Results Found',
-          detail: 'No companies found matching your criteria',
-          meta: { suggestions: suggestions }
-        )
-      end
-
-      def render_validation_error(resource)
-        errors = resource.errors.map do |error|
-          {
-            status: '422',
-            code: 'validation_error',
-            title: 'Validation Error',
-            detail: error.full_message,
-            source: { pointer: "/data/attributes/#{error.attribute}" }
-          }
-        end
-
-        render json: { errors: errors }, status: :unprocessable_entity
-      end
+      before_action :set_default_format
 
       private
 
-      def set_jsonapi_content_type
-        response.headers['Content-Type'] = 'application/vnd.api+json'
+      def set_default_format
+        request.format = :json unless params[:format]
       end
 
-      # Parse include parameter for eager loading
-      def parse_includes(include_param)
-        return [] unless include_param
-
-        includes = []
-        include_param.split(',').each do |inc|
-          parts = inc.split('.')
-          includes << if parts.length == 1
-                        parts[0].to_sym
-                      else
-                        # Handle nested includes
-                        build_nested_include(parts)
-                      end
+      def render_jsonapi(resource, options = {})
+        if resource.nil?
+          render_error('Resource not found', :not_found)
+          return
         end
-        includes
+
+        serializer_class = options.delete(:serializer) || "#{resource.class.name}Serializer".constantize
+        relationships = parse_relationships(params[:with])
+
+        render json: serializer_class.new(
+          resource,
+          options.merge(include: relationships)
+        ).serializable_hash.to_json,
+               status: options[:status] || :ok,
+               content_type: 'application/vnd.api+json'
       end
 
-      def build_nested_include(parts)
-        return parts[0].to_sym if parts.length == 1
+      def render_jsonapi_collection(collection, options = {})
+        serializer_class = options.delete(:serializer) || infer_serializer_class(collection)
+        relationships = parse_relationships(params[:with])
 
-        { parts[0].to_sym => build_nested_include(parts[1..]) }
+        # Paginate collection
+        paginated = collection.page(params[:page]).per(per_page)
+
+        serialized = serializer_class.new(
+          paginated,
+          options.merge(
+            include: relationships,
+            meta: pagination_meta(paginated).merge(options[:meta] || {}),
+            links: pagination_links(paginated)
+          )
+        ).serializable_hash
+
+        render json: serialized.to_json,
+               status: options[:status] || :ok,
+               content_type: 'application/vnd.api+json'
       end
 
-      # Safe pagination params
-      def page_params
-        page = params[:page].to_i
-        per_page = params[:per_page].to_i
+      // ...existing code...
 
-        page = 1 if page < 1
-        per_page = 20 if per_page < 1
-        per_page = 100 if per_page > 100
+      def parse_relationships(with_param)
+        return [] if with_param.blank?
 
-        { page: page, per_page: per_page }
+        with_param.split(',').map(&:strip).map do |path|
+          path.split('.').map(&:to_sym).reduce([]) do |acc, part|
+            acc.empty? ? [part] : [acc.last => part]
+          end.last
+        end
+      end
+
+      def infer_serializer_class(collection)
+        model_name = collection.klass.name
+        "#{model_name}Serializer".constantize
+      end
+
+      def pagination_meta(collection)
+        {
+          pagination: {
+            current_page: collection.current_page,
+            per_page: collection.limit_value,
+            total_pages: collection.total_pages,
+            total_count: collection.total_count
+          }
+        }
+      end
+
+      def pagination_links(collection)
+        base_url = request.base_url + request.path
+        query_params = request.query_parameters.except(:page)
+
+        {
+          self: build_url(base_url, query_params.merge(page: collection.current_page)),
+          first: build_url(base_url, query_params.merge(page: 1)),
+          last: build_url(base_url, query_params.merge(page: collection.total_pages)),
+          prev: collection.prev_page ? build_url(base_url, query_params.merge(page: collection.prev_page)) : nil,
+          next: collection.next_page ? build_url(base_url, query_params.merge(page: collection.next_page)) : nil
+        }.compact
+      end
+
+      def build_url(base_url, params)
+        "#{base_url}?#{params.to_query}"
+      end
+
+      def per_page
+        per = params[:per_page].to_i
+        per.positive? ? [per, 100].min : 20
       end
     end
   end

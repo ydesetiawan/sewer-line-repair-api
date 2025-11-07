@@ -30,6 +30,9 @@ gem 'kaminari'
 # Geocoding
 gem 'geocoder'
 
+# CORS support
+gem 'rack-cors'
+
 group :development, :test do
   # RSpec testing framework
   gem 'rspec-rails', '~> 7.1'

@@ -40,6 +40,7 @@ module Api
       # GET /api/v1/companies/:id
       def show
         includes = parse_includes(params[:include])
+        set_company
 
         options = {
           include: includes

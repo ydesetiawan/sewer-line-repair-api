@@ -84,8 +84,6 @@ RSpec.describe 'api/v1/locations' do
       tags 'Locations'
       consumes 'application/vnd.api+json'
       produces 'application/vnd.api+json'
-      description 'Convert an address to coordinates and find nearby information'
-
       parameter name: :geocode_request, in: :body, schema: {
         type: :object,
         properties: {
@@ -141,8 +139,8 @@ RSpec.describe 'api/v1/locations' do
 
         before do
           allow(Geocoder).to receive(:coordinates).and_return([28.5383, -81.3792])
-          allow(City).to receive_message_chain(:near, :first).and_return(city)
-          allow(Company).to receive_message_chain(:near, :count).and_return(5)
+          allow(City).to receive(:first).and_return(city)
+          allow(Company).to receive(:count).and_return(5)
           allow(Geocoder).to receive(:coordinates).and_return(nil)
         end
 

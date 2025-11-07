@@ -47,8 +47,6 @@ module Api
                content_type: 'application/vnd.api+json'
       end
 
-      // ...existing code...
-
       def parse_relationships(with_param)
         return [] if with_param.blank?
 
@@ -95,6 +93,22 @@ module Api
       def per_page
         per = params[:per_page].to_i
         per.positive? ? [per, 100].min : 20
+      end
+
+      def render_error(message, status = :unprocessable_entity, code: nil, meta: {})
+        render json: {
+          errors: [
+            {
+              status: Rack::Utils.status_code(status).to_s,
+              code: code || status.to_s,
+              title: message.is_a?(String) ? message : 'Error',
+              detail: message.is_a?(Hash) ? message[:detail] : message,
+              meta: meta
+            }
+          ]
+        }.to_json,
+               status: status,
+               content_type: 'application/vnd.api+json'
       end
     end
   end

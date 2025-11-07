@@ -1,6 +1,7 @@
 class Company < ApplicationRecord
   # Geocoding
   geocoded_by :full_address
+
   # Callbacks
   before_validation :generate_slug
   after_validation :geocode, if: :should_geocode?
@@ -23,6 +24,25 @@ class Company < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :average_rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 }
+
+  # Scopes
+  scope :near, lambda { |coordinates, radius_in_miles = 20|
+    lat, lng = Geocoder::Calculations.extract_coordinates(coordinates)
+    return none unless lat && lng
+
+    earth_radius = 3958.8 # miles
+
+    # Haversine formula for distance calculation
+    distance_calc = "(#{earth_radius} * 2 * ASIN(SQRT(
+      POWER(SIN((#{lat} - companies.latitude) * PI() / 180 / 2), 2) +
+      COS(#{lat} * PI() / 180) * COS(companies.latitude * PI() / 180) *
+      POWER(SIN((#{lng} - companies.longitude) * PI() / 180 / 2), 2)
+    )))"
+
+    # Use where and order without select to avoid AS keyword issue
+    where("#{distance_calc} <= #{radius_in_miles}")
+      .order(Arel.sql(distance_calc))
+  }
 
   # Methods
   def url_path

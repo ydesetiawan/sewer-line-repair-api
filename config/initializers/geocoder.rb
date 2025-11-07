@@ -19,7 +19,11 @@ Geocoder.configure(
 
   # Calculation options
   units: :mi,                 # :km for kilometers or :mi for miles
-  distances: :linear          # :spherical or :linear
+  distances: :spherical,      # :spherical uses better distance calculation
+
+  # PostgreSQL specific settings
+  # Use quoted distance column name to avoid reserved word conflicts
+  distance_column: :calculated_distance
 
   # Cache configuration
   # cache_options: {

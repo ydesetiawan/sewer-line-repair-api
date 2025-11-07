@@ -6,7 +6,7 @@ RSpec.describe 'api/v1/states' do
 
     get('List companies in a state') do
       tags 'States'
-      produces 'application/vnd.api+json'
+      produces 'application/json'
 
       parameter name: :city, in: :query, type: :string, required: false,
                 description: 'Filter by city name or slug'

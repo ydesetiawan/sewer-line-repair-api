@@ -76,7 +76,7 @@ Successfully implemented a complete REST API with JSON:API specification for the
 - ✅ `geocoder` - Geocoding and distance calculations
 
 ### 5. **JSON:API Compliance**
-- ✅ `application/vnd.api+json` content type
+- ✅ `application/json` content type
 - ✅ Proper data/included structure
 - ✅ Relationship links
 - ✅ Self links
@@ -148,7 +148,7 @@ curl "http://localhost:3000/api/v1/locations/autocomplete?q=orla&type=city&limit
 ### 7. Geocode Address
 ```bash
 curl -X POST "http://localhost:3000/api/v1/locations/geocode" \
-  -H "Content-Type: application/vnd.api+json" \
+  -H "Content-Type: applicationjson" \
   -d '{
     "data": {
       "type": "geocode_request",

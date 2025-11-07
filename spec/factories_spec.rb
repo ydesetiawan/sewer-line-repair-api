@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Factory Tests' do
+RSpec.describe 'Factory Tests' do # rubocop:disable RSpec/DescribeClass
   describe 'factories' do
     it 'creates a valid country' do
       country = create(:country)

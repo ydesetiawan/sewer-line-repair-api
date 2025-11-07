@@ -4,7 +4,7 @@ RSpec.describe 'api/v1/companies' do
   path '/api/v1/companies/search' do
     get('Search companies') do
       tags 'Companies'
-      produces 'application/vnd.api+json'
+      produces 'application/json'
       parameter name: :city, in: :query, type: :string, required: false,
                 description: 'Filter by city name'
       parameter name: :state, in: :query, type: :string, required: false,
@@ -127,9 +127,8 @@ RSpec.describe 'api/v1/companies' do
 
     get('Show company details') do
       tags 'Companies'
-      produces 'application/vnd.api+json'
+      produces 'application/json'
       description 'Get detailed information about a specific company'
-
 
       response(200, 'successful') do
         schema type: :object,

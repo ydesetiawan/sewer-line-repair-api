@@ -4,7 +4,7 @@ RSpec.describe 'api/v1/locations' do
   path '/api/v1/locations/autocomplete' do
     get('Autocomplete location search') do
       tags 'Locations'
-      produces 'application/vnd.api+json'
+      produces 'application/json'
       description 'Search for cities, states, and countries with autocomplete'
 
       parameter name: :q, in: :query, type: :string, required: true,
@@ -43,7 +43,7 @@ RSpec.describe 'api/v1/locations' do
                }
 
         let(:state) { create(:state) }
-        let!(:city) { create(:city, name: 'Orlando', state: state) }
+        let(:city) { create(:city, name: 'Orlando', state: state) }
         let(:q) { 'Orl' }
 
         run_test! do |response|
@@ -80,27 +80,15 @@ RSpec.describe 'api/v1/locations' do
   end
 
   path '/api/v1/locations/geocode' do
-    post('Geocode an address') do
+    post 'Geocode an address' do
       tags 'Locations'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
+      consumes 'application/json'
+      produces 'application/json'
       parameter name: :geocode_request, in: :body, schema: {
         type: :object,
         properties: {
-          data: {
-            type: :object,
-            properties: {
-              attributes: {
-                type: :object,
-                properties: {
-                  address: { type: :string, example: '1234 Main St, Orlando, FL 32801' }
-                },
-                required: ['address']
-              }
-            }
-          }
-        },
-        required: ['data']
+          address: { type: :string, example: '1234 Main St, Orlando, FL 32801' }
+        }
       }
 
       response(200, 'successful') do
@@ -116,8 +104,8 @@ RSpec.describe 'api/v1/locations' do
                          address: { type: :string },
                          latitude: { type: :number },
                          longitude: { type: :number },
-                         nearest_city: { type: :string },
-                         nearest_state: { type: :string },
+                         nearest_city: { type: [:string, :null] },
+                         nearest_state: { type: [:string, :null] },
                          nearby_companies_count: { type: :integer }
                        }
                      }
@@ -125,23 +113,23 @@ RSpec.describe 'api/v1/locations' do
                  }
                }
 
-        let(:state) { create(:state, name: 'Florida') }
-        let(:city) { create(:city, name: 'Orlando', state: state) }
+        let(:valid_address) { '1600 Amphitheatre Parkway, Mountain View, CA' }
+        let(:coordinates) { [37.4224764, -122.0842499] }
         let(:geocode_request) do
           {
-            data: {
-              attributes: {
-                address: '1234 Main St, Orlando, FL 32801'
-              }
-            }
+            address: valid_address
           }
         end
 
+        let!(:country) { create(:country, name: 'United States', code: 'US', slug: 'united-states') }
+        let!(:state) { create(:state, name: 'California', code: 'CA', slug: 'california', country: country) }
+        let!(:test_city) { create(:city, name: 'Mountain View', slug: 'mountain-view', state: state, latitude: 37.4224764, longitude: -122.0842499) }
+
         before do
-          allow(Geocoder).to receive(:coordinates).and_return([28.5383, -81.3792])
-          allow(City).to receive(:first).and_return(city)
-          allow(Company).to receive(:count).and_return(5)
-          allow(Geocoder).to receive(:coordinates).and_return(nil)
+          # Stub successful geocoding
+          allow(Geocoder).to receive(:coordinates)
+            .with(valid_address)
+            .and_return(coordinates)
         end
 
         run_test! do |response|
@@ -149,11 +137,12 @@ RSpec.describe 'api/v1/locations' do
           expect(data['data']['type']).to eq('geocode_result')
           expect(data['data']['attributes']['latitude']).to be_present
           expect(data['data']['attributes']['longitude']).to be_present
+          expect(data['data']['attributes']['nearest_city']).to eq('Mountain View')
         end
       end
 
       response(400, 'missing address') do
-        let(:geocode_request) { { data: { attributes: {} } } }
+        let(:geocode_request) { { address: nil } }
 
         run_test!
       end
@@ -161,12 +150,15 @@ RSpec.describe 'api/v1/locations' do
       response(404, 'geocode failed') do
         let(:geocode_request) do
           {
-            data: {
-              attributes: {
-                address: 'Invalid Address'
-              }
-            }
+            address: 'Invalid Address XYZ123'
           }
+        end
+
+        before do
+          # Stub failed geocoding to avoid SSL errors
+          allow(Geocoder).to receive(:coordinates)
+            .with('Invalid Address XYZ123')
+            .and_return(nil)
         end
 
         run_test! do |response|

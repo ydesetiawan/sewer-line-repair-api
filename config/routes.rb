@@ -17,12 +17,19 @@ Rails.application.routes.draw do
         resources :gallery_images, only: [:index]
       end
 
+      resources :locations do
+        collection do
+          get 'autocomplete', to: 'locations#autocomplete'
+          post 'geocode', to: 'locations#geocode'
+        end
+      end
+
       # States with nested companies
       get 'states/:state_slug/companies', to: 'states#companies'
 
       # Location services
-      get 'locations/autocomplete', to: 'locations#autocomplete'
-      post 'locations/geocode', to: 'locations#geocode'
+      # get 'locations/autocomplete', to: 'locations#autocomplete'
+      # post 'locations/geocode', to: 'locations#geocode'
 
       # Service categories
       resources :service_categories, only: %i[index show] do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_06_011601) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_07_094022) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_06_011601) do
     t.index ["average_rating"], name: "index_companies_on_average_rating"
     t.index ["city_id", "slug"], name: "index_companies_on_city_id_and_slug", unique: true
     t.index ["city_id"], name: "index_companies_on_city_id"
+    t.index ["latitude", "longitude"], name: "index_companies_on_latitude_and_longitude"
     t.index ["name"], name: "index_companies_on_name"
   end
 

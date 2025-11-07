@@ -23,7 +23,7 @@ module Api
           options.merge(include: relationships)
         ).serializable_hash.to_json,
                status: options[:status] || :ok,
-               content_type: 'application/vnd.api+json'
+               content_type: 'application/json'
       end
 
       def render_jsonapi_collection(collection, options = {})
@@ -44,7 +44,7 @@ module Api
 
         render json: serialized.to_json,
                status: options[:status] || :ok,
-               content_type: 'application/vnd.api+json'
+               content_type: 'application/json'
       end
 
       def parse_relationships(with_param)
@@ -108,7 +108,7 @@ module Api
           ]
         }.to_json,
                status: status,
-               content_type: 'application/vnd.api+json'
+               content_type: 'application/json'
       end
     end
   end

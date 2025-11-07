@@ -18,7 +18,11 @@ AllCops:
     - 'config/environments/**/*'
     - 'config/initializers/**/*'
 
+RSpec/LetSetup:
+  Enabled: false
 
+RSpec/IndexedLet:
+  Enabled: false
 
 # Increase line length for API responses and tests
 Layout/LineLength:

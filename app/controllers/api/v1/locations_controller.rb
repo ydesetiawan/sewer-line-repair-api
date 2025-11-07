@@ -20,7 +20,7 @@ module Api
             count: results.size,
             limit: limit
           }
-        }, status: :ok, content_type: 'application/vnd.api+json'
+        }, status: :ok, content_type: 'application/json'
       end
 
       # POST /api/v1/locations/geocode
@@ -60,7 +60,7 @@ module Api
               nearby_companies_count: nearby_companies
             }
           }
-        }, status: :ok, content_type: 'application/vnd.api+json'
+        }, status: :ok, content_type: 'application/json'
       end
 
       private
@@ -117,7 +117,7 @@ module Api
       end
 
       def geocode_params
-        params.require(:data).require(:attributes).permit(:address)
+        params.permit(:address)
       end
     end
   end

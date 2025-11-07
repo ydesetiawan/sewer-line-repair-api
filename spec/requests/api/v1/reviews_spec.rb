@@ -6,7 +6,7 @@ RSpec.describe 'api/v1/reviews' do
 
     get('List company reviews') do
       tags 'Reviews'
-      produces 'application/vnd.api+json'
+      produces 'application/json'
       description 'Get paginated list of reviews for a specific company'
 
       parameter name: :verified_only, in: :query, type: :boolean, required: false,
@@ -66,7 +66,7 @@ RSpec.describe 'api/v1/reviews' do
 
         let(:city) { create(:city) }
         let(:company) { create(:company, city: city) }
-        let!(:review) { create(:review, company: company) }
+        let(:review) { create(:review, company: company) }
         let(:company_id) { company.id }
 
         run_test! do |response|

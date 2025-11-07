@@ -10,8 +10,6 @@ paths:
       summary: Search companies
       tags:
       - Companies
-      description: Search for sewer repair companies with various filters and sorting
-        options
       parameters:
       - name: city
         in: query
@@ -79,12 +77,6 @@ paths:
         description: Sort by field (name, rating, -name, -rating)
         schema:
           type: string
-      - name: include
-        in: query
-        required: false
-        description: Include relationships (city, state, country, reviews, service_categories)
-        schema:
-          type: string
       - name: page
         in: query
         required: false
@@ -101,7 +93,7 @@ paths:
         '200':
           description: successful
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -160,7 +152,7 @@ paths:
         '404':
           description: no results found
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -192,19 +184,11 @@ paths:
       tags:
       - Companies
       description: Get detailed information about a specific company
-      parameters:
-      - name: include
-        in: query
-        required: false
-        description: Include relationships (city, state, country, reviews, service_categories,
-          gallery_images, certifications)
-        schema:
-          type: string
       responses:
         '200':
           description: successful
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -254,7 +238,7 @@ paths:
         '200':
           description: successful
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -293,7 +277,7 @@ paths:
         '400':
           description: query too short
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -313,60 +297,23 @@ paths:
       summary: Geocode an address
       tags:
       - Locations
-      description: Convert an address to coordinates and find nearby information
       parameters: []
       responses:
         '200':
           description: successful
-          content:
-            application/vnd.api+json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        example: geocode_result
-                      attributes:
-                        type: object
-                        properties:
-                          address:
-                            type: string
-                          latitude:
-                            type: number
-                          longitude:
-                            type: number
-                          nearest_city:
-                            type: string
-                          nearest_state:
-                            type: string
-                          nearby_companies_count:
-                            type: integer
         '400':
           description: missing address
         '404':
           description: geocode failed
       requestBody:
         content:
-          application/vnd.api+json:
+          application/json:
             schema:
               type: object
               properties:
-                data:
-                  type: object
-                  properties:
-                    attributes:
-                      type: object
-                      properties:
-                        address:
-                          type: string
-                          example: 1234 Main St, Orlando, FL 32801
-                      required:
-                      - address
-              required:
-              - data
+                address:
+                  type: string
+                  example: 1234 Main St, Orlando, FL 32801
   "/api/v1/companies/{company_id}/reviews":
     parameters:
     - name: company_id
@@ -415,7 +362,7 @@ paths:
         '200':
           description: successful
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -481,7 +428,6 @@ paths:
       summary: List companies in a state
       tags:
       - States
-      description: Get paginated list of companies in a specific state
       parameters:
       - name: city
         in: query
@@ -529,7 +475,7 @@ paths:
         '200':
           description: successful
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -570,7 +516,7 @@ paths:
         '404':
           description: state not found
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
                 type: object
                 properties:

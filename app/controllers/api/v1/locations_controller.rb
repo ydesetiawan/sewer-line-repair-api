@@ -117,7 +117,12 @@ module Api
       end
 
       def geocode_params
-        params.permit(:address)
+        # Handle both flat params and nested location params
+        if params[:location].present?
+          params.require(:location).permit(:address)
+        else
+          params.permit(:address)
+        end
       end
     end
   end

@@ -1,41 +1,44 @@
-# Geocoder configuration
+# config/initializers/geocoder.rb
 
-Geocoder.configure(
-  # Geocoding options
-  timeout: 3,                 # geocoding service timeout (secs)
-  lookup: :nominatim,         # name of geocoding service (symbol)
-  ip_lookup: :ipinfo_io,      # name of IP address geocoding service (symbol)
-  language: :en,              # ISO-639 language code
-  use_https: false,           # use HTTPS for lookup requests? (if supported)
-  # http_proxy: nil,          # HTTP proxy server (user:pass@host:port)
-  # https_proxy: nil,         # HTTPS proxy server (user:pass@host:port)
-  # api_key: nil,             # API key for geocoding service
-  cache: nil,                 # cache object (must respond to #[], #[]=, and #del)
-
-  # Exceptions that should not be rescued by default
-  # (if you want to implement custom error handling);
-  # supports SocketError and Timeout::Error
-  # always_raise: [],
-
-  # Calculation options
-  units: :mi,                 # :km for kilometers or :mi for miles
-  distances: :spherical,      # :spherical uses better distance calculation
-
-  # PostgreSQL specific settings
-  # Use quoted distance column name to avoid reserved word conflicts
+config = {
+  timeout: 5,
+  units: :mi,
+  language: :en,
   distance_column: :calculated_distance
+}
 
-  # Cache configuration
-  # cache_options: {
-  #   expiration: 2.days,
-  #   prefix: 'geocoder:'
-  # }
-)
+if Rails.env.production?
+  # Production: Use proper SSL
+  config.merge!(
+    lookup: :nominatim,
+    use_https: true,
+    http_headers: {
+      "User-Agent" => "SewerLineRepairAPI/1.0 (#{ENV['CONTACT_EMAIL'] || 'your-email@example.com'})"
+    },
+    nominatim: {
+      host: "geocode.maps.co"
+    }
+  )
+elsif Rails.env.development?
+  # Development: Disable SSL verification (temporary fix)
+  config.merge!(
+    lookup: :nominatim,
+    use_https: true,
+    http_headers: {
+      "User-Agent" => "SewerLineRepairAPI/1.0 (#{ENV['CONTACT_EMAIL'] || 'your-email@example.com'})"
+    },
+    nominatim: {
+      host: "geocode.maps.co"
+    },
+    # Disable SSL verification in development only
+    always_raise: :all,
+    ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
+  )
+elsif Rails.env.test?
+  config.merge!(
+    lookup: :test,
+    ip_lookup: :test
+  )
+end
 
-# For production, use a proper geocoding service like Google Maps or Mapbox
-# Geocoder.configure(
-#   lookup: :google,
-#   api_key: ENV['GOOGLE_MAPS_API_KEY'],
-#   use_https: true
-# )
-
+Geocoder.configure(config)

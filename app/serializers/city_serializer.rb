@@ -21,9 +21,7 @@ class CitySerializer
   # Meta
   meta do |object, params|
     meta_hash = {}
-    if params && params[:include_full_name]
-      meta_hash[:full_name] = object.full_name
-    end
+    meta_hash[:full_name] = object.full_name if params && params[:include_full_name]
     meta_hash
   end
 
@@ -32,4 +30,3 @@ class CitySerializer
     "/api/v1/cities/#{object.id}"
   end
 end
-

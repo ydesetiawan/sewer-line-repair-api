@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-RSpec.describe 'api/v1/states', type: :request do
+RSpec.describe 'api/v1/states' do
   path '/api/v1/states/{state_slug}/companies' do
     parameter name: :state_slug, in: :path, type: :string, description: 'State slug or code (e.g., "florida" or "FL")'
 
@@ -21,97 +21,97 @@ RSpec.describe 'api/v1/states', type: :request do
 
       response '200', 'companies found' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, example: 'company' },
-                  attributes: {
-                    type: :object,
-                    properties: {
-                      name: { type: :string },
-                      slug: { type: :string },
-                      phone: { type: :string },
-                      email: { type: :string },
-                      website: { type: :string },
-                      average_rating: { type: :string },
-                      total_reviews: { type: :integer },
-                      verified_professional: { type: :boolean },
-                      certified_partner: { type: :boolean },
-                      created_at: { type: :string, format: 'date-time' },
-                      updated_at: { type: :string, format: 'date-time' }
-                    }
-                  },
-                  relationships: {
-                    type: :object,
-                    properties: {
-                      city: {
-                        type: :object,
-                        properties: {
-                          data: {
-                            type: :object,
-                            properties: {
-                              id: { type: :string },
-                              type: { type: :string, example: 'city' }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  links: {
-                    type: :object,
-                    properties: {
-                      self: { type: :string }
-                    }
-                  }
-                }
-              }
-            },
-            included: {
-              type: :array,
-              items: { type: :object }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                state: {
-                  type: :object,
-                  properties: {
-                    id: { type: :string },
-                    name: { type: :string },
-                    code: { type: :string },
-                    slug: { type: :string },
-                    total_companies: { type: :integer },
-                    total_cities: { type: :integer }
-                  }
-                },
-                pagination: {
-                  type: :object,
-                  properties: {
-                    current_page: { type: :integer },
-                    per_page: { type: :integer },
-                    total_pages: { type: :integer },
-                    total_count: { type: :integer },
-                    has_next: { type: :boolean },
-                    has_prev: { type: :boolean }
-                  }
-                }
-              }
-            },
-            links: {
-              type: :object,
-              properties: {
-                self: { type: :string },
-                first: { type: :string },
-                next: { type: :string },
-                last: { type: :string }
-              }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string, example: 'company' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           name: { type: :string },
+                           slug: { type: :string },
+                           phone: { type: :string },
+                           email: { type: :string },
+                           website: { type: :string },
+                           average_rating: { type: :string },
+                           total_reviews: { type: :integer },
+                           verified_professional: { type: :boolean },
+                           certified_partner: { type: :boolean },
+                           created_at: { type: :string, format: 'date-time' },
+                           updated_at: { type: :string, format: 'date-time' }
+                         }
+                       },
+                       relationships: {
+                         type: :object,
+                         properties: {
+                           city: {
+                             type: :object,
+                             properties: {
+                               data: {
+                                 type: :object,
+                                 properties: {
+                                   id: { type: :string },
+                                   type: { type: :string, example: 'city' }
+                                 }
+                               }
+                             }
+                           }
+                         }
+                       },
+                       links: {
+                         type: :object,
+                         properties: {
+                           self: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 },
+                 included: {
+                   type: :array,
+                   items: { type: :object }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     state: {
+                       type: :object,
+                       properties: {
+                         id: { type: :string },
+                         name: { type: :string },
+                         code: { type: :string },
+                         slug: { type: :string },
+                         total_companies: { type: :integer },
+                         total_cities: { type: :integer }
+                       }
+                     },
+                     pagination: {
+                       type: :object,
+                       properties: {
+                         current_page: { type: :integer },
+                         per_page: { type: :integer },
+                         total_pages: { type: :integer },
+                         total_count: { type: :integer },
+                         has_next: { type: :boolean },
+                         has_prev: { type: :boolean }
+                       }
+                     }
+                   }
+                 },
+                 links: {
+                   type: :object,
+                   properties: {
+                     self: { type: :string },
+                     first: { type: :string },
+                     next: { type: :string },
+                     last: { type: :string }
+                   }
+                 }
+               }
 
         let(:state_slug) { 'florida' }
 
@@ -140,20 +140,20 @@ RSpec.describe 'api/v1/states', type: :request do
 
       response '404', 'state not found' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string }
+                     }
+                   }
+                 }
+               }
 
         let(:state_slug) { 'nonexistent' }
 
@@ -166,4 +166,3 @@ RSpec.describe 'api/v1/states', type: :request do
     end
   end
 end
-

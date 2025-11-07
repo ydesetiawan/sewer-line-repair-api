@@ -42,11 +42,11 @@ module Api
         render json: { errors: [error] }, status: status
       end
 
-      def render_not_found(detail = "Resource not found")
+      def render_not_found(detail = 'Resource not found')
         render_jsonapi_error(
           status: 404,
-          code: "not_found",
-          title: "Not Found",
+          code: 'not_found',
+          title: 'Not Found',
           detail: detail
         )
       end
@@ -54,9 +54,9 @@ module Api
       def render_no_results(suggestions: [])
         render_jsonapi_error(
           status: 404,
-          code: "no_results",
-          title: "No Results Found",
-          detail: "No companies found matching your criteria",
+          code: 'no_results',
+          title: 'No Results Found',
+          detail: 'No companies found matching your criteria',
           meta: { suggestions: suggestions }
         )
       end
@@ -64,9 +64,9 @@ module Api
       def render_validation_error(resource)
         errors = resource.errors.map do |error|
           {
-            status: "422",
-            code: "validation_error",
-            title: "Validation Error",
+            status: '422',
+            code: 'validation_error',
+            title: 'Validation Error',
             detail: error.full_message,
             source: { pointer: "/data/attributes/#{error.attribute}" }
           }
@@ -78,7 +78,7 @@ module Api
       private
 
       def set_jsonapi_content_type
-        response.headers["Content-Type"] = "application/vnd.api+json"
+        response.headers['Content-Type'] = 'application/vnd.api+json'
       end
 
       # Parse include parameter for eager loading
@@ -86,14 +86,14 @@ module Api
         return [] unless include_param
 
         includes = []
-        include_param.split(",").each do |inc|
-          parts = inc.split(".")
-          if parts.length == 1
-            includes << parts[0].to_sym
-          else
-            # Handle nested includes
-            includes << build_nested_include(parts)
-          end
+        include_param.split(',').each do |inc|
+          parts = inc.split('.')
+          includes << if parts.length == 1
+                        parts[0].to_sym
+                      else
+                        # Handle nested includes
+                        build_nested_include(parts)
+                      end
         end
         includes
       end
@@ -101,7 +101,7 @@ module Api
       def build_nested_include(parts)
         return parts[0].to_sym if parts.length == 1
 
-        { parts[0].to_sym => build_nested_include(parts[1..-1]) }
+        { parts[0].to_sym => build_nested_include(parts[1..]) }
       end
 
       # Safe pagination params
@@ -118,4 +118,3 @@ module Api
     end
   end
 end
-

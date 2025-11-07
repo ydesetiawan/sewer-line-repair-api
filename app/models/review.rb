@@ -7,9 +7,9 @@ class Review < ApplicationRecord
   validates :review_date, presence: true
   validates :rating, presence: true, inclusion: { in: 1..5 }, numericality: { only_integer: true }
 
+  after_destroy :update_company_rating
   # Callbacks
   after_save :update_company_rating
-  after_destroy :update_company_rating
 
   # Scopes
   scope :verified, -> { where(verified: true) }

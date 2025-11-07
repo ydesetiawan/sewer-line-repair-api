@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
 
   # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'up' => 'rails/health#show', :as => :rails_health_check
 
   # API v1 Routes (JSON:API format)
   namespace :api do
@@ -25,12 +25,12 @@ Rails.application.routes.draw do
       post 'locations/geocode', to: 'locations#geocode'
 
       # Service categories
-      resources :service_categories, only: [:index, :show] do
+      resources :service_categories, only: %i[index show] do
         get 'companies', to: 'service_categories#companies', on: :member
       end
 
       # Countries, States, Cities (read-only)
-      resources :countries, only: [:index, :show] do
+      resources :countries, only: %i[index show] do
         resources :states, only: [:index]
       end
 

@@ -1,57 +1,57 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 # Rails API framework
-gem "rails", "~> 8.1.1"
+gem 'rails', '~> 8.1.1'
 
 # PostgreSQL database
-gem "pg", "~> 1.1"
+gem 'pg', '~> 1.1'
 
 # Puma web server
-gem "puma", ">= 5.0"
+gem 'puma', '>= 5.0'
 
 # Boot optimization
-gem "bootsnap", require: false
+gem 'bootsnap', require: false
 
 # Windows timezone data
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # API Documentation with Swagger
-gem "rswag"
-gem "rswag-api"
-gem "rswag-ui"
-gem "ostruct"
+gem 'ostruct'
+gem 'rswag'
+gem 'rswag-api'
+gem 'rswag-ui'
 
 # JSON:API serialization
-gem "jsonapi-serializer"
+gem 'jsonapi-serializer'
 
 # Pagination
-gem "kaminari"
+gem 'kaminari'
 
 # Geocoding
-gem "geocoder"
+gem 'geocoder'
 
 group :development, :test do
   # RSpec testing framework
-  gem "rspec-rails", "~> 7.1"
-  gem "rswag-specs"
+  gem 'rspec-rails', '~> 7.1'
+  gem 'rswag-specs'
 
   # Test helpers
-  gem "factory_bot_rails"
-  gem "faker"
-  gem "database_cleaner-active_record"
+  gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
+  gem 'faker'
 
   # Code quality
-  gem "rubocop", require: false
-  gem "rubocop-rspec", require: false
-  gem "rubocop-rails", require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-factory_bot', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 
   # Security scanning
-  gem "brakeman", require: false
+  gem 'brakeman', require: false
 end
 
 group :development do
   # Development tools
-  gem "listen"
+  gem 'listen'
 end
-
-

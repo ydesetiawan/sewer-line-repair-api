@@ -17,4 +17,3 @@ class CertificationSerializer
     "/api/v1/certifications/#{object.id}"
   end
 end
-

@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-RSpec.describe 'api/v1/reviews', type: :request do
+RSpec.describe 'api/v1/reviews' do
   path '/api/v1/companies/{company_id}/reviews' do
     parameter name: :company_id, in: :path, type: :string, description: 'Company ID'
 
@@ -18,87 +18,87 @@ RSpec.describe 'api/v1/reviews', type: :request do
 
       response '200', 'reviews found' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, example: 'review' },
-                  attributes: {
-                    type: :object,
-                    properties: {
-                      reviewer_name: { type: :string },
-                      review_date: { type: :string, format: 'date' },
-                      rating: { type: :integer },
-                      review_text: { type: :string },
-                      verified: { type: :boolean },
-                      created_at: { type: :string, format: 'date-time' }
-                    }
-                  },
-                  relationships: {
-                    type: :object,
-                    properties: {
-                      company: {
-                        type: :object,
-                        properties: {
-                          data: {
-                            type: :object,
-                            properties: {
-                              id: { type: :string },
-                              type: { type: :string, example: 'company' }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  links: {
-                    type: :object,
-                    properties: {
-                      self: { type: :string }
-                    }
-                  }
-                }
-              }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                pagination: {
-                  type: :object,
-                  properties: {
-                    current_page: { type: :integer },
-                    per_page: { type: :integer },
-                    total_pages: { type: :integer },
-                    total_count: { type: :integer },
-                    has_next: { type: :boolean },
-                    has_prev: { type: :boolean }
-                  }
-                },
-                rating_distribution: {
-                  type: :object,
-                  properties: {
-                    '1': { type: :integer },
-                    '2': { type: :integer },
-                    '3': { type: :integer },
-                    '4': { type: :integer },
-                    '5': { type: :integer }
-                  }
-                }
-              }
-            },
-            links: {
-              type: :object,
-              properties: {
-                self: { type: :string },
-                first: { type: :string },
-                next: { type: :string },
-                last: { type: :string }
-              }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string, example: 'review' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           reviewer_name: { type: :string },
+                           review_date: { type: :string, format: 'date' },
+                           rating: { type: :integer },
+                           review_text: { type: :string },
+                           verified: { type: :boolean },
+                           created_at: { type: :string, format: 'date-time' }
+                         }
+                       },
+                       relationships: {
+                         type: :object,
+                         properties: {
+                           company: {
+                             type: :object,
+                             properties: {
+                               data: {
+                                 type: :object,
+                                 properties: {
+                                   id: { type: :string },
+                                   type: { type: :string, example: 'company' }
+                                 }
+                               }
+                             }
+                           }
+                         }
+                       },
+                       links: {
+                         type: :object,
+                         properties: {
+                           self: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     pagination: {
+                       type: :object,
+                       properties: {
+                         current_page: { type: :integer },
+                         per_page: { type: :integer },
+                         total_pages: { type: :integer },
+                         total_count: { type: :integer },
+                         has_next: { type: :boolean },
+                         has_prev: { type: :boolean }
+                       }
+                     },
+                     rating_distribution: {
+                       type: :object,
+                       properties: {
+                         '1': { type: :integer },
+                         '2': { type: :integer },
+                         '3': { type: :integer },
+                         '4': { type: :integer },
+                         '5': { type: :integer }
+                       }
+                     }
+                   }
+                 },
+                 links: {
+                   type: :object,
+                   properties: {
+                     self: { type: :string },
+                     first: { type: :string },
+                     next: { type: :string },
+                     last: { type: :string }
+                   }
+                 }
+               }
 
         let(:company_id) { Company.first.id }
 
@@ -124,20 +124,20 @@ RSpec.describe 'api/v1/reviews', type: :request do
 
       response '404', 'company not found' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string }
+                     }
+                   }
+                 }
+               }
 
         let(:company_id) { 'invalid' }
 
@@ -146,4 +146,3 @@ RSpec.describe 'api/v1/reviews', type: :request do
     end
   end
 end
-

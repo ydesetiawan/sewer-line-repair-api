@@ -3,7 +3,7 @@ class City < ApplicationRecord
   belongs_to :state
   has_one :country, through: :state
   has_many :companies, dependent: :destroy
-  has_many :company_service_areas
+  has_many :company_service_areas, dependent: :restrict_with_error
 
   # Validations
   validates :name, presence: true

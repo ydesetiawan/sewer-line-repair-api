@@ -25,4 +25,3 @@ class GalleryImageSerializer
     "/api/v1/gallery_images/#{object.id}"
   end
 end
-

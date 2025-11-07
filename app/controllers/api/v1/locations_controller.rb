@@ -12,26 +12,24 @@ module Api
         if query.blank? || query.length < 2
           return render_jsonapi_error(
             status: 400,
-            code: "invalid_parameter",
-            title: "Invalid Parameter",
-            detail: "Query must be at least 2 characters",
-            source: { parameter: "q" }
+            code: 'invalid_parameter',
+            title: 'Invalid Parameter',
+            detail: 'Query must be at least 2 characters',
+            source: { parameter: 'q' }
           )
         end
 
-        results = []
-
-        case params[:type]
-        when "city"
-          results = search_cities(query, limit)
-        when "state"
-          results = search_states(query, limit)
-        when "country"
-          results = search_countries(query, limit)
-        else
-          # Search all types
-          results = search_cities(query, limit / 2) + search_states(query, limit / 2)
-        end
+        results = case params[:type]
+                  when 'city'
+                    search_cities(query, limit)
+                  when 'state'
+                    search_states(query, limit)
+                  when 'country'
+                    search_countries(query, limit)
+                  else
+                    # Search all types
+                    search_cities(query, limit / 2) + search_states(query, limit / 2)
+                  end
 
         # Get included states/countries
         included_states = []
@@ -47,7 +45,7 @@ module Api
         end
 
         options = {
-          include: [:state, :country],
+          include: %i[state country],
           params: { include_counts: true, include_full_name: true },
           meta: {
             query: query,
@@ -86,10 +84,10 @@ module Api
         if address.blank?
           return render_jsonapi_error(
             status: 422,
-            code: "validation_error",
-            title: "Validation Error",
-            detail: "Address is required",
-            source: { pointer: "/data/attributes/address" }
+            code: 'validation_error',
+            title: 'Validation Error',
+            detail: 'Address is required',
+            source: { pointer: '/data/attributes/address' }
           )
         end
 
@@ -98,15 +96,15 @@ module Api
         if results.empty?
           return render_jsonapi_error(
             status: 422,
-            code: "geocoding_failed",
-            title: "Geocoding Failed",
-            detail: "Unable to geocode the provided address",
-            source: { pointer: "/data/attributes/address" },
+            code: 'geocoding_failed',
+            title: 'Geocoding Failed',
+            detail: 'Unable to geocode the provided address',
+            source: { pointer: '/data/attributes/address' },
             meta: {
               suggestions: [
-                "Check address format",
-                "Include city and state",
-                "Try a more specific address"
+                'Check address format',
+                'Include city and state',
+                'Try a more specific address'
               ]
             }
           )
@@ -118,8 +116,8 @@ module Api
         city = City.near([location.latitude, location.longitude], 50, units: :mi).first
 
         response_data = {
-          id: "temp-geocode-result",
-          type: "geocode_result",
+          id: 'temp-geocode-result',
+          type: 'geocode_result',
           attributes: {
             formatted_address: location.formatted_address,
             street_address: location.street_address || location.address,
@@ -131,9 +129,9 @@ module Api
 
         if city
           response_data[:relationships] = {
-            city: { data: { id: city.id.to_s, type: "city" } },
-            state: { data: { id: city.state.id.to_s, type: "state" } },
-            country: { data: { id: city.state.country.id.to_s, type: "country" } }
+            city: { data: { id: city.id.to_s, type: 'city' } },
+            state: { data: { id: city.state.id.to_s, type: 'state' } },
+            country: { data: { id: city.state.country.id.to_s, type: 'country' } }
           }
           response_data[:meta] = {
             nearby_companies_count: city.companies.count
@@ -154,22 +152,21 @@ module Api
       private
 
       def search_cities(query, limit)
-        City.where("LOWER(name) LIKE ?", "%#{query.downcase}%")
+        City.where('LOWER(name) LIKE ?', "%#{query.downcase}%")
             .includes(:state, :country)
             .limit(limit)
       end
 
       def search_states(query, limit)
-        State.where("LOWER(name) LIKE ? OR LOWER(code) LIKE ?", "%#{query.downcase}%", "%#{query.downcase}%")
+        State.where('LOWER(name) LIKE ? OR LOWER(code) LIKE ?', "%#{query.downcase}%", "%#{query.downcase}%")
              .includes(:country)
              .limit(limit)
       end
 
       def search_countries(query, limit)
-        Country.where("LOWER(name) LIKE ? OR LOWER(code) LIKE ?", "%#{query.downcase}%", "%#{query.downcase}%")
+        Country.where('LOWER(name) LIKE ? OR LOWER(code) LIKE ?', "%#{query.downcase}%", "%#{query.downcase}%")
                .limit(limit)
       end
     end
   end
 end
-

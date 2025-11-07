@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-RSpec.describe 'api/v1/locations', type: :request do
+RSpec.describe 'api/v1/locations' do
   path '/api/v1/locations/autocomplete' do
     get 'Location autocomplete search' do
       tags 'Locations'
@@ -14,70 +14,70 @@ RSpec.describe 'api/v1/locations', type: :request do
 
       response '200', 'locations found' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, example: 'city' },
-                  attributes: {
-                    type: :object,
-                    properties: {
-                      name: { type: :string },
-                      slug: { type: :string },
-                      latitude: { type: :string },
-                      longitude: { type: :string },
-                      companies_count: { type: :integer }
-                    }
-                  },
-                  relationships: {
-                    type: :object,
-                    properties: {
-                      state: {
-                        type: :object,
-                        properties: {
-                          data: {
-                            type: :object,
-                            properties: {
-                              id: { type: :string },
-                              type: { type: :string, example: 'state' }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  links: {
-                    type: :object,
-                    properties: {
-                      self: { type: :string }
-                    }
-                  },
-                  meta: {
-                    type: :object,
-                    properties: {
-                      full_name: { type: :string }
-                    }
-                  }
-                }
-              }
-            },
-            included: {
-              type: :array,
-              items: {
-                type: :object
-              }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                query: { type: :string },
-                total_results: { type: :integer }
-              }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string, example: 'city' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           name: { type: :string },
+                           slug: { type: :string },
+                           latitude: { type: :string },
+                           longitude: { type: :string },
+                           companies_count: { type: :integer }
+                         }
+                       },
+                       relationships: {
+                         type: :object,
+                         properties: {
+                           state: {
+                             type: :object,
+                             properties: {
+                               data: {
+                                 type: :object,
+                                 properties: {
+                                   id: { type: :string },
+                                   type: { type: :string, example: 'state' }
+                                 }
+                               }
+                             }
+                           }
+                         }
+                       },
+                       links: {
+                         type: :object,
+                         properties: {
+                           self: { type: :string }
+                         }
+                       },
+                       meta: {
+                         type: :object,
+                         properties: {
+                           full_name: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 },
+                 included: {
+                   type: :array,
+                   items: {
+                     type: :object
+                   }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     query: { type: :string },
+                     total_results: { type: :integer }
+                   }
+                 }
+               }
 
         let(:q) { 'orla' }
         let(:type) { 'city' }
@@ -93,26 +93,26 @@ RSpec.describe 'api/v1/locations', type: :request do
 
       response '400', 'invalid query' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string },
-                  source: {
-                    type: :object,
-                    properties: {
-                      parameter: { type: :string }
-                    }
-                  }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string },
+                       source: {
+                         type: :object,
+                         properties: {
+                           parameter: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 }
+               }
 
         let(:q) { 'a' }
 
@@ -146,7 +146,7 @@ RSpec.describe 'api/v1/locations', type: :request do
                 required: ['address']
               }
             },
-            required: ['type', 'attributes']
+            required: %w[type attributes]
           }
         },
         required: ['data']
@@ -154,76 +154,76 @@ RSpec.describe 'api/v1/locations', type: :request do
 
       response '200', 'address geocoded' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :object,
-              properties: {
-                id: { type: :string },
-                type: { type: :string, example: 'geocode_result' },
-                attributes: {
-                  type: :object,
-                  properties: {
-                    formatted_address: { type: :string },
-                    street_address: { type: :string },
-                    zip_code: { type: :string },
-                    latitude: { type: :string },
-                    longitude: { type: :string }
-                  }
-                },
-                relationships: {
-                  type: :object,
-                  properties: {
-                    city: {
-                      type: :object,
-                      properties: {
-                        data: {
-                          type: :object,
-                          properties: {
-                            id: { type: :string },
-                            type: { type: :string, example: 'city' }
-                          }
-                        }
-                      }
-                    },
-                    state: {
-                      type: :object,
-                      properties: {
-                        data: {
-                          type: :object,
-                          properties: {
-                            id: { type: :string },
-                            type: { type: :string, example: 'state' }
-                          }
-                        }
-                      }
-                    },
-                    country: {
-                      type: :object,
-                      properties: {
-                        data: {
-                          type: :object,
-                          properties: {
-                            id: { type: :string },
-                            type: { type: :string, example: 'country' }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                meta: {
-                  type: :object,
-                  properties: {
-                    nearby_companies_count: { type: :integer }
-                  }
-                }
-              }
-            },
-            included: {
-              type: :array,
-              items: { type: :object }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string },
+                     type: { type: :string, example: 'geocode_result' },
+                     attributes: {
+                       type: :object,
+                       properties: {
+                         formatted_address: { type: :string },
+                         street_address: { type: :string },
+                         zip_code: { type: :string },
+                         latitude: { type: :string },
+                         longitude: { type: :string }
+                       }
+                     },
+                     relationships: {
+                       type: :object,
+                       properties: {
+                         city: {
+                           type: :object,
+                           properties: {
+                             data: {
+                               type: :object,
+                               properties: {
+                                 id: { type: :string },
+                                 type: { type: :string, example: 'city' }
+                               }
+                             }
+                           }
+                         },
+                         state: {
+                           type: :object,
+                           properties: {
+                             data: {
+                               type: :object,
+                               properties: {
+                                 id: { type: :string },
+                                 type: { type: :string, example: 'state' }
+                               }
+                             }
+                           }
+                         },
+                         country: {
+                           type: :object,
+                           properties: {
+                             data: {
+                               type: :object,
+                               properties: {
+                                 id: { type: :string },
+                                 type: { type: :string, example: 'country' }
+                               }
+                             }
+                           }
+                         }
+                       }
+                     },
+                     meta: {
+                       type: :object,
+                       properties: {
+                         nearby_companies_count: { type: :integer }
+                       }
+                     }
+                   }
+                 },
+                 included: {
+                   type: :array,
+                   items: { type: :object }
+                 }
+               }
 
         let(:geocode_request) do
           {
@@ -246,35 +246,35 @@ RSpec.describe 'api/v1/locations', type: :request do
 
       response '422', 'geocoding failed' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string },
-                  source: {
-                    type: :object,
-                    properties: {
-                      pointer: { type: :string }
-                    }
-                  },
-                  meta: {
-                    type: :object,
-                    properties: {
-                      suggestions: {
-                        type: :array,
-                        items: { type: :string }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string },
+                       source: {
+                         type: :object,
+                         properties: {
+                           pointer: { type: :string }
+                         }
+                       },
+                       meta: {
+                         type: :object,
+                         properties: {
+                           suggestions: {
+                             type: :array,
+                             items: { type: :string }
+                           }
+                         }
+                       }
+                     }
+                   }
+                 }
+               }
 
         let(:geocode_request) do
           {
@@ -313,4 +313,3 @@ RSpec.describe 'api/v1/locations', type: :request do
     end
   end
 end
-

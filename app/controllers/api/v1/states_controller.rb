@@ -8,9 +8,7 @@ module Api
         @state = State.find_by(slug: params[:state_slug]) ||
                  State.find_by(code: params[:state_slug].upcase)
 
-        unless @state
-          return render_not_found("State not found")
-        end
+        return render_not_found('State not found') unless @state
 
         # Get companies in this state's cities
         city_ids = @state.cities.pluck(:id)
@@ -30,22 +28,22 @@ module Api
           end
         end
 
-        @companies = @companies.where(verified_professional: true) if params[:verified_only] == "true"
-        @companies = @companies.where("average_rating >= ?", params[:min_rating].to_f) if params[:min_rating].present?
+        @companies = @companies.where(verified_professional: true) if params[:verified_only] == 'true'
+        @companies = @companies.where('average_rating >= ?', params[:min_rating].to_f) if params[:min_rating].present?
 
         # Sorting
-        sort_param = params[:sort] || "name"
-        direction = sort_param.start_with?("-") ? "DESC" : "ASC"
-        field = sort_param.gsub(/^-/, "")
+        sort_param = params[:sort] || 'name'
+        direction = sort_param.start_with?('-') ? 'DESC' : 'ASC'
+        field = sort_param.gsub(/^-/, '')
 
-        case field
-        when "rating"
-          @companies = @companies.order("average_rating #{direction}")
-        when "name"
-          @companies = @companies.order("name #{direction}")
-        else
-          @companies = @companies.order("name ASC")
-        end
+        @companies = case field
+                     when 'rating'
+                       @companies.order("average_rating #{direction}")
+                     when 'name'
+                       @companies.order("name #{direction}")
+                     else
+                       @companies.order(:name)
+                     end
 
         # Paginate
         @companies = @companies.page(page_params[:page]).per(page_params[:per_page])
@@ -74,4 +72,3 @@ module Api
     end
   end
 end
-

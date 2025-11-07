@@ -36,4 +36,3 @@ class CompanySerializer
     "/api/v1/companies/#{object.id}"
   end
 end
-

@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-RSpec.describe 'api/v1/companies', type: :request do
+RSpec.describe 'api/v1/companies' do
   path '/api/v1/companies/search' do
     get 'Search companies' do
       tags 'Companies'
@@ -25,126 +25,126 @@ RSpec.describe 'api/v1/companies', type: :request do
 
       response '200', 'companies found' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, example: 'company' },
-                  attributes: {
-                    type: :object,
-                    properties: {
-                      name: { type: :string },
-                      slug: { type: :string },
-                      phone: { type: :string },
-                      email: { type: :string },
-                      website: { type: :string },
-                      street_address: { type: :string },
-                      zip_code: { type: :string },
-                      latitude: { type: :string },
-                      longitude: { type: :string },
-                      specialty: { type: :string },
-                      service_level: { type: :string },
-                      description: { type: :string },
-                      average_rating: { type: :string },
-                      total_reviews: { type: :integer },
-                      verified_professional: { type: :boolean },
-                      certified_partner: { type: :boolean },
-                      licensed: { type: :boolean },
-                      insured: { type: :boolean },
-                      background_checked: { type: :boolean },
-                      service_guarantee: { type: :boolean },
-                      distance_miles: { type: :number },
-                      distance_kilometers: { type: :number },
-                      created_at: { type: :string, format: 'date-time' },
-                      updated_at: { type: :string, format: 'date-time' }
-                    }
-                  },
-                  relationships: {
-                    type: :object,
-                    properties: {
-                      city: {
-                        type: :object,
-                        properties: {
-                          data: {
-                            type: :object,
-                            properties: {
-                              id: { type: :string },
-                              type: { type: :string, example: 'city' }
-                            }
-                          }
-                        }
-                      },
-                      service_categories: {
-                        type: :object,
-                        properties: {
-                          data: {
-                            type: :array,
-                            items: {
-                              type: :object,
-                              properties: {
-                                id: { type: :string },
-                                type: { type: :string, example: 'service_category' }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  links: {
-                    type: :object,
-                    properties: {
-                      self: { type: :string }
-                    }
-                  }
-                }
-              }
-            },
-            included: {
-              type: :array,
-              items: {
-                type: :object
-              }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                search_context: {
-                  type: :object,
-                  properties: {
-                    query_type: { type: :string },
-                    location: { type: :string },
-                    coordinates: { type: :object },
-                    radius_miles: { type: :integer },
-                    filters_applied: { type: :object }
-                  }
-                },
-                pagination: {
-                  type: :object,
-                  properties: {
-                    current_page: { type: :integer },
-                    per_page: { type: :integer },
-                    total_pages: { type: :integer },
-                    total_count: { type: :integer },
-                    has_next: { type: :boolean },
-                    has_prev: { type: :boolean }
-                  }
-                }
-              }
-            },
-            links: {
-              type: :object,
-              properties: {
-                self: { type: :string },
-                first: { type: :string },
-                next: { type: :string },
-                last: { type: :string }
-              }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string, example: 'company' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           name: { type: :string },
+                           slug: { type: :string },
+                           phone: { type: :string },
+                           email: { type: :string },
+                           website: { type: :string },
+                           street_address: { type: :string },
+                           zip_code: { type: :string },
+                           latitude: { type: :string },
+                           longitude: { type: :string },
+                           specialty: { type: :string },
+                           service_level: { type: :string },
+                           description: { type: :string },
+                           average_rating: { type: :string },
+                           total_reviews: { type: :integer },
+                           verified_professional: { type: :boolean },
+                           certified_partner: { type: :boolean },
+                           licensed: { type: :boolean },
+                           insured: { type: :boolean },
+                           background_checked: { type: :boolean },
+                           service_guarantee: { type: :boolean },
+                           distance_miles: { type: :number },
+                           distance_kilometers: { type: :number },
+                           created_at: { type: :string, format: 'date-time' },
+                           updated_at: { type: :string, format: 'date-time' }
+                         }
+                       },
+                       relationships: {
+                         type: :object,
+                         properties: {
+                           city: {
+                             type: :object,
+                             properties: {
+                               data: {
+                                 type: :object,
+                                 properties: {
+                                   id: { type: :string },
+                                   type: { type: :string, example: 'city' }
+                                 }
+                               }
+                             }
+                           },
+                           service_categories: {
+                             type: :object,
+                             properties: {
+                               data: {
+                                 type: :array,
+                                 items: {
+                                   type: :object,
+                                   properties: {
+                                     id: { type: :string },
+                                     type: { type: :string, example: 'service_category' }
+                                   }
+                                 }
+                               }
+                             }
+                           }
+                         }
+                       },
+                       links: {
+                         type: :object,
+                         properties: {
+                           self: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 },
+                 included: {
+                   type: :array,
+                   items: {
+                     type: :object
+                   }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     search_context: {
+                       type: :object,
+                       properties: {
+                         query_type: { type: :string },
+                         location: { type: :string },
+                         coordinates: { type: :object },
+                         radius_miles: { type: :integer },
+                         filters_applied: { type: :object }
+                       }
+                     },
+                     pagination: {
+                       type: :object,
+                       properties: {
+                         current_page: { type: :integer },
+                         per_page: { type: :integer },
+                         total_pages: { type: :integer },
+                         total_count: { type: :integer },
+                         has_next: { type: :boolean },
+                         has_prev: { type: :boolean }
+                       }
+                     }
+                   }
+                 },
+                 links: {
+                   type: :object,
+                   properties: {
+                     self: { type: :string },
+                     first: { type: :string },
+                     next: { type: :string },
+                     last: { type: :string }
+                   }
+                 }
+               }
 
         let(:city) { 'Orlando' }
         let(:state) { 'FL' }
@@ -157,29 +157,29 @@ RSpec.describe 'api/v1/companies', type: :request do
 
       response '404', 'no results found' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string },
-                  meta: {
-                    type: :object,
-                    properties: {
-                      suggestions: {
-                        type: :array,
-                        items: { type: :string }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string },
+                       meta: {
+                         type: :object,
+                         properties: {
+                           suggestions: {
+                             type: :array,
+                             items: { type: :string }
+                           }
+                         }
+                       }
+                     }
+                   }
+                 }
+               }
 
         let(:city) { 'NonexistentCity' }
 
@@ -188,26 +188,26 @@ RSpec.describe 'api/v1/companies', type: :request do
 
       response '400', 'invalid parameters' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string },
-                  source: {
-                    type: :object,
-                    properties: {
-                      parameter: { type: :string }
-                    }
-                  }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string },
+                       source: {
+                         type: :object,
+                         properties: {
+                           parameter: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 }
+               }
 
         let(:min_rating) { 10 }
 
@@ -227,53 +227,53 @@ RSpec.describe 'api/v1/companies', type: :request do
 
       response '200', 'company found' do
         schema type: :object,
-          properties: {
-            data: {
-              type: :object,
-              properties: {
-                id: { type: :string },
-                type: { type: :string, example: 'company' },
-                attributes: {
-                  type: :object,
-                  properties: {
-                    name: { type: :string },
-                    slug: { type: :string },
-                    phone: { type: :string },
-                    email: { type: :string },
-                    website: { type: :string },
-                    street_address: { type: :string },
-                    zip_code: { type: :string },
-                    latitude: { type: :string },
-                    longitude: { type: :string },
-                    specialty: { type: :string },
-                    service_level: { type: :string },
-                    description: { type: :string },
-                    average_rating: { type: :string },
-                    total_reviews: { type: :integer },
-                    verified_professional: { type: :boolean },
-                    certified_partner: { type: :boolean },
-                    licensed: { type: :boolean },
-                    insured: { type: :boolean },
-                    background_checked: { type: :boolean },
-                    service_guarantee: { type: :boolean },
-                    created_at: { type: :string, format: 'date-time' },
-                    updated_at: { type: :string, format: 'date-time' }
-                  }
-                },
-                relationships: { type: :object },
-                links: {
-                  type: :object,
-                  properties: {
-                    self: { type: :string }
-                  }
-                }
-              }
-            },
-            included: {
-              type: :array,
-              items: { type: :object }
-            }
-          }
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string },
+                     type: { type: :string, example: 'company' },
+                     attributes: {
+                       type: :object,
+                       properties: {
+                         name: { type: :string },
+                         slug: { type: :string },
+                         phone: { type: :string },
+                         email: { type: :string },
+                         website: { type: :string },
+                         street_address: { type: :string },
+                         zip_code: { type: :string },
+                         latitude: { type: :string },
+                         longitude: { type: :string },
+                         specialty: { type: :string },
+                         service_level: { type: :string },
+                         description: { type: :string },
+                         average_rating: { type: :string },
+                         total_reviews: { type: :integer },
+                         verified_professional: { type: :boolean },
+                         certified_partner: { type: :boolean },
+                         licensed: { type: :boolean },
+                         insured: { type: :boolean },
+                         background_checked: { type: :boolean },
+                         service_guarantee: { type: :boolean },
+                         created_at: { type: :string, format: 'date-time' },
+                         updated_at: { type: :string, format: 'date-time' }
+                       }
+                     },
+                     relationships: { type: :object },
+                     links: {
+                       type: :object,
+                       properties: {
+                         self: { type: :string }
+                       }
+                     }
+                   }
+                 },
+                 included: {
+                   type: :array,
+                   items: { type: :object }
+                 }
+               }
 
         let(:id) { Company.first.id }
 
@@ -286,20 +286,20 @@ RSpec.describe 'api/v1/companies', type: :request do
 
       response '404', 'company not found' do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  status: { type: :string },
-                  code: { type: :string },
-                  title: { type: :string },
-                  detail: { type: :string }
-                }
-              }
-            }
-          }
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       status: { type: :string },
+                       code: { type: :string },
+                       title: { type: :string },
+                       detail: { type: :string }
+                     }
+                   }
+                 }
+               }
 
         let(:id) { 'invalid' }
 
@@ -308,4 +308,3 @@ RSpec.describe 'api/v1/companies', type: :request do
     end
   end
 end
-

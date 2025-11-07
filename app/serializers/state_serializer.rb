@@ -16,4 +16,3 @@ class StateSerializer
     "/api/v1/states/#{object.id}"
   end
 end
-

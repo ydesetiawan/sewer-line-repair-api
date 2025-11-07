@@ -21,9 +21,7 @@ module Api
         # Paginate
         @companies = @companies.page(page_params[:page]).per(page_params[:per_page])
 
-        if @companies.empty?
-          return render_no_results(suggestions: search_suggestions)
-        end
+        return render_no_results(suggestions: search_suggestions) if @companies.empty?
 
         # Parse includes
         includes = parse_includes(params[:include])
@@ -55,20 +53,20 @@ module Api
       def set_company
         @company = Company.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render_not_found("Company not found")
+        render_not_found('Company not found')
       end
 
       def apply_location_filters
         if params[:city].present?
           city = City.find_by(slug: params[:city].parameterize) ||
-                 City.find_by("LOWER(name) = ?", params[:city].downcase)
+                 City.find_by('LOWER(name) = ?', params[:city].downcase)
           @companies = @companies.where(city_id: city.id) if city
         end
 
         if params[:state].present?
           state = State.find_by(slug: params[:state].parameterize) ||
                   State.find_by(code: params[:state].upcase) ||
-                  State.find_by("LOWER(name) = ?", params[:state].downcase)
+                  State.find_by('LOWER(name) = ?', params[:state].downcase)
           if state
             city_ids = state.cities.pluck(:id)
             @companies = @companies.where(city_id: city_ids)
@@ -86,7 +84,7 @@ module Api
       def search_by_coordinates(lat, lng, radius_miles)
         @search_by_coordinates = true
         @companies = @companies.near([lat, lng], radius_miles, units: :mi)
-                                .select("companies.*, (6371 * acos(cos(radians(#{lat})) * cos(radians(latitude)) * cos(radians(longitude) - radians(#{lng})) + sin(radians(#{lat})) * sin(radians(latitude)))) AS distance_km")
+                               .select("companies.*, (6371 * acos(cos(radians(#{lat})) * cos(radians(latitude)) * cos(radians(longitude) - radians(#{lng})) + sin(radians(#{lat})) * sin(radians(latitude)))) AS distance_km") # rubocop:disable Layout/LineLength
 
         # Add distance attributes
         @companies = @companies.map do |company|
@@ -98,49 +96,49 @@ module Api
 
       def geocode_and_search(address, radius_miles)
         results = Geocoder.search(address)
-        if results.any?
-          location = results.first
-          search_by_coordinates(location.latitude, location.longitude, radius_miles)
-        end
+        return unless results.any?
+
+        location = results.first
+        search_by_coordinates(location.latitude, location.longitude, radius_miles)
       end
 
       def apply_service_filter
-        if params[:service_category].present?
-          category = ServiceCategory.find_by(slug: params[:service_category])
-          if category
-            @companies = @companies.joins(:company_services)
-                                   .where(company_services: { service_category_id: category.id })
-          end
-        end
+        return if params[:service_category].blank?
+
+        category = ServiceCategory.find_by(slug: params[:service_category])
+        return unless category
+
+        @companies = @companies.joins(:company_services)
+                               .where(company_services: { service_category_id: category.id })
       end
 
       def apply_rating_filter
-        if params[:min_rating].present?
-          rating = params[:min_rating].to_f
-          @companies = @companies.where("average_rating >= ?", rating) if rating.between?(0, 5)
-        end
+        return if params[:min_rating].blank?
+
+        rating = params[:min_rating].to_f
+        @companies = @companies.where('average_rating >= ?', rating) if rating.between?(0, 5)
       end
 
       def apply_verification_filter
-        if params[:verified_only] == "true"
-          @companies = @companies.where(verified_professional: true)
-        end
+        return unless params[:verified_only] == 'true'
+
+        @companies = @companies.where(verified_professional: true)
       end
 
       def apply_sorting
-        sort_param = params[:sort] || "name"
-        direction = sort_param.start_with?("-") ? "DESC" : "ASC"
-        field = sort_param.gsub(/^-/, "")
+        sort_param = params[:sort] || 'name'
+        direction = sort_param.start_with?('-') ? 'DESC' : 'ASC'
+        field = sort_param.gsub(/^-/, '')
 
         case field
-        when "rating"
+        when 'rating'
           @companies = @companies.order("average_rating #{direction}")
-        when "name"
+        when 'name'
           @companies = @companies.order("name #{direction}")
-        when "distance"
+        when 'distance'
           @companies = @companies.order("distance_km #{direction}") if @search_by_coordinates
         else
-          @companies = @companies.order("name ASC")
+          @companies = @companies.order('name ASC')
         end
       end
 
@@ -155,7 +153,7 @@ module Api
               city: params[:city],
               state: params[:state],
               service_category: params[:service_category],
-              verified_only: params[:verified_only] == "true",
+              verified_only: params[:verified_only] == 'true',
               min_rating: params[:min_rating]&.to_f
             }
           },
@@ -164,11 +162,12 @@ module Api
       end
 
       def determine_query_type
-        return "coordinate_search" if params[:lat].present? && params[:lng].present?
-        return "address_search" if params[:address].present?
-        return "city_search" if params[:city].present?
-        return "state_search" if params[:state].present?
-        "general_search"
+        return 'coordinate_search' if params[:lat].present? && params[:lng].present?
+        return 'address_search' if params[:address].present?
+        return 'city_search' if params[:city].present?
+        return 'state_search' if params[:state].present?
+
+        'general_search'
       end
 
       def search_location_name
@@ -176,22 +175,23 @@ module Api
         return params[:city] if params[:city]
         return params[:state] if params[:state]
         return params[:address] if params[:address]
+
         nil
       end
 
       def search_coordinates
         return { lat: params[:lat], lng: params[:lng] } if params[:lat] && params[:lng]
+
         nil
       end
 
       def search_suggestions
         suggestions = []
-        suggestions << "Try increasing the search radius" if params[:radius]
-        suggestions << "Remove some filters" if params[:min_rating] || params[:verified_only]
-        suggestions << "Try searching nearby cities"
+        suggestions << 'Try increasing the search radius' if params[:radius]
+        suggestions << 'Remove some filters' if params[:min_rating] || params[:verified_only]
+        suggestions << 'Try searching nearby cities'
         suggestions
       end
     end
   end
 end
-

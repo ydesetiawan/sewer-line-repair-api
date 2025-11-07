@@ -16,4 +16,3 @@ class ReviewSerializer
     "/api/v1/reviews/#{object.id}"
   end
 end
-

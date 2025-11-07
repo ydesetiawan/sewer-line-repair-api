@@ -1,6 +1,8 @@
 class Company < ApplicationRecord
   # Geocoding
   geocoded_by :full_address
+  # Callbacks
+  before_validation :generate_slug
   after_validation :geocode, if: :should_geocode?
 
   # Associations
@@ -22,9 +24,6 @@ class Company < ApplicationRecord
   validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :average_rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 }
 
-  # Callbacks
-  before_validation :generate_slug
-
   # Methods
   def url_path
     "/sewer-line-repair/#{country.slug}/#{state.slug}/#{city.slug}/#{slug}"
@@ -42,7 +41,7 @@ class Company < ApplicationRecord
   end
 
   def full_address
-    [street_address, city&.name, state&.name, zip_code].compact.join(", ")
+    [street_address, city&.name, state&.name, zip_code].compact.join(', ')
   end
 
   private

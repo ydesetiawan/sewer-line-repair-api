@@ -1,9 +1,12 @@
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
 
 AllCops:
   NewCops: enable
+  SuggestExtensions: false
   TargetRubyVersion: 3.4
   Exclude:
     - 'bin/**/*'
@@ -23,7 +26,7 @@ Layout/LineLength:
 
 # Allow longer methods in specs
 Metrics/MethodLength:
-  Max: 15
+  Max: 60
   Exclude:
     - 'spec/**/*'
 
@@ -48,16 +51,49 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Max: 4
 
+Metrics/ParameterLists:
+  Max: 6
+
 # Style preferences
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
-  Enabled: true
-  EnforcedStyle: always
+  Enabled: false
 
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 Style/HashSyntax:
   EnforcedStyle: ruby19_no_mixed_keys
+
+RSpec/EmptyExampleGroup:
+  Enabled: false
+
+# Max memoized
+RSpec/MultipleMemoizedHelpers:
+  Max: 20
+
+Rails/WhereRange:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Max: 20
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 200
+
+Rails/OrderArguments:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false

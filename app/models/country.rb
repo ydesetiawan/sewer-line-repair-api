@@ -5,7 +5,8 @@ class Country < ApplicationRecord
 
   # Validations
   validates :name, presence: true
-  validates :code, presence: true, format: { with: /\A[A-Z]{2}\z/, message: "must be 2 uppercase letters" }, uniqueness: true
+  validates :code, presence: true, format: { with: /\A[A-Z]{2}\z/, message: 'must be 2 uppercase letters' },
+                   uniqueness: true
   validates :slug, presence: true, uniqueness: true
 
   # Callbacks

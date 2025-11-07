@@ -13,4 +13,3 @@ class CountrySerializer
     "/api/v1/countries/#{object.id}"
   end
 end
-

@@ -9,8 +9,8 @@ class CompanyServiceArea < ApplicationRecord
   private
 
   def prevent_primary_city_in_service_areas
-    if city_id == company&.city_id
-      errors.add(:city, "cannot be the same as company's primary city")
-    end
+    return unless city_id == company&.city_id
+
+    errors.add(:city, "cannot be the same as company's primary city")
   end
 end

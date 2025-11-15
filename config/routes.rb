@@ -41,7 +41,7 @@ Rails.application.routes.draw do
         resources :states, only: [:index]
       end
 
-      resources :states, only: [:show] do
+      resources :states, only: %i[show index] do
         resources :cities, only: [:index]
       end
 

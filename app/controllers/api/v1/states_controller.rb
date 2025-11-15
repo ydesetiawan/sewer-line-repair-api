@@ -1,6 +1,16 @@
 module Api
   module V1
     class StatesController < BaseController
+
+      # GET /api/v1/states
+      def index
+        states = State.all
+                      .page(params[:page].presence&.to_i || 1)
+                      .per(params[:per_page].presence&.to_i || 50)
+
+        render_collection(StatesSerializer, states)
+      end
+
       # GET /api/v1/states/:state_slug/companies
       def companies
         state = State.find_by(slug: params[:state_slug])

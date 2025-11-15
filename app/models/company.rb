@@ -51,7 +51,8 @@ class Company < ApplicationRecord
 
   def update_rating!
     if reviews.any?
-      self.average_rating = reviews.average(:rating).round(2)
+      avg_rating = reviews.average(:rating)
+      self.average_rating = avg_rating ? avg_rating.round(2) : 0
       self.total_reviews = reviews.count
     else
       self.average_rating = 0

@@ -13,9 +13,18 @@ module Api
             return
           end
         end
-        states = states
-                 .page(params[:page].presence&.to_i || 1)
-                 .per(params[:per_page].presence&.to_i || 50)
+
+        if params['state'].present?
+          states = states.where('states.slug = ? OR states.name ILIKE ?', params['state'], "%#{params['state']}%")
+        end
+
+        # Use left_joins with select to count companies efficiently
+        states = states.left_joins(:companies)
+                       .select('states.*, COUNT(companies.id) AS companies_count')
+                       .group('states.id')
+                       .includes(:country)
+                       .page(params[:page].presence&.to_i || 1)
+                       .per(params[:per_page].presence&.to_i || 50)
 
         render_collection(StatesSerializer, states)
       end

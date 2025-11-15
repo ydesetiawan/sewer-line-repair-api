@@ -104,8 +104,8 @@ RSpec.describe 'api/v1/locations' do
                          address: { type: :string },
                          latitude: { type: :number },
                          longitude: { type: :number },
-                         nearest_city: { type: [:string, :null] },
-                         nearest_state: { type: [:string, :null] },
+                         nearest_city: { type: %i[string null] },
+                         nearest_state: { type: %i[string null] },
                          nearby_companies_count: { type: :integer }
                        }
                      }
@@ -130,6 +130,9 @@ RSpec.describe 'api/v1/locations' do
           allow(Geocoder).to receive(:coordinates)
             .with(valid_address)
             .and_return(coordinates)
+          allow(Geocoder).to receive(:coordinates)
+            .with('Invalid Address XYZ123')
+            .and_return(nil)
         end
 
         run_test! do |response|
@@ -152,13 +155,6 @@ RSpec.describe 'api/v1/locations' do
           {
             address: 'Invalid Address XYZ123'
           }
-        end
-
-        before do
-          # Stub failed geocoding to avoid SSL errors
-          allow(Geocoder).to receive(:coordinates)
-            .with('Invalid Address XYZ123')
-            .and_return(nil)
         end
 
         run_test! do |response|

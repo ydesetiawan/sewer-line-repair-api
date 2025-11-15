@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class StatesSerializer < ApplicationSerializer
-
   set_type :state
   set_id :id
 
@@ -15,5 +14,4 @@ class StatesSerializer < ApplicationSerializer
       slug: state.country.slug
     }
   end
-
 end

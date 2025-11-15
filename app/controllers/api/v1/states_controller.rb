@@ -1,7 +1,6 @@
 module Api
   module V1
     class StatesController < BaseController
-
       # GET /api/v1/states
       def index
         states = State

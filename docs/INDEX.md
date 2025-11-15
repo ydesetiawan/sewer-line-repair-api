@@ -48,9 +48,29 @@ Welcome to the Sewer Line Repair API project!
    - Example endpoints
    - Testing with curl
 
+### Database & Seeding
+
+6. **[RAKE_TASKS.md](RAKE_TASKS.md)** 🌱
+   - Database seeding rake tasks
+   - US data seeding (1 country, 50 states, 1000+ cities)
+   - Companies seeding (2000 companies with services)
+   - Complete usage guide
+   - Troubleshooting
+
+7. **[RAKE_TASKS_SUMMARY.md](RAKE_TASKS_SUMMARY.md)** 📊
+   - Implementation summary
+   - Statistics and results
+   - Files created
+   - Quick reference
+
+8. **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** 🗄️
+   - Database structure
+   - Model relationships
+   - Schema overview
+
 ### Upgrade Information
 
-6. **[UPGRADE_SUMMARY.md](UPGRADE_SUMMARY.md)** 📝
+9. **[UPGRADE_SUMMARY.md](UPGRADE_SUMMARY.md)** 📝
    - What was upgraded (Ruby 3.4.1 → 3.4.7, Rails 8.0.4 → 8.1.1)
    - Changes made to the project
    - Dependencies updated

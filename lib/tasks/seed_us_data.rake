@@ -20,7 +20,7 @@ namespace :db do
         # Check for companies
         company_count = Company.where(city_id: us_city_ids).count
 
-        if company_count > 0
+        if company_count.positive?
           puts "   ⚠️  Warning: Found #{company_count} companies in US cities."
           puts '   ℹ️  This task will DELETE all companies in US cities to proceed.'
           puts '   Press Ctrl+C to cancel, or wait 5 seconds to continue...'
@@ -135,28 +135,30 @@ namespace :db do
       puts "\n📊 Total cities to be created: #{total_cities}"
 
       # Sample city names for realistic data generation
-      city_prefixes = [
-        'Spring', 'River', 'Lake', 'Mountain', 'Oak', 'Pine', 'Cedar', 'Maple',
-        'West', 'East', 'North', 'South', 'New', 'Port', 'Fort', 'Saint',
-        'Green', 'Fair', 'Clear', 'Silver', 'Golden', 'Rose', 'Sun', 'Moon'
+      city_prefixes = %w[
+        Spring River Lake Mountain Oak Pine Cedar Maple
+        West East North South New Port Fort Saint
+        Green Fair Clear Silver Golden Rose Sun Moon
       ]
 
-      city_suffixes = [
-        'ville', 'town', 'city', 'field', 'wood', 'dale', 'view', 'port',
-        'land', 'burg', 'ford', 'ton', 'ham', 'ley', 'mont', 'ridge'
+      city_suffixes = %w[
+        ville town city field wood dale view port
+        land burg ford ton ham ley mont ridge
       ]
 
       # Real city names for major states (sample)
       real_cities = {
-        'CA' => ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento', 'San Jose', 'Oakland', 'Fresno', 'Long Beach'],
+        'CA' => ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento', 'San Jose', 'Oakland', 'Fresno',
+                 'Long Beach'],
         'TX' => ['Houston', 'Dallas', 'Austin', 'San Antonio', 'Fort Worth', 'El Paso', 'Arlington', 'Corpus Christi'],
-        'FL' => ['Miami', 'Jacksonville', 'Tampa', 'Orlando', 'St. Petersburg', 'Hialeah', 'Tallahassee', 'Fort Lauderdale'],
+        'FL' => ['Miami', 'Jacksonville', 'Tampa', 'Orlando', 'St. Petersburg', 'Hialeah', 'Tallahassee',
+                 'Fort Lauderdale'],
         'NY' => ['New York', 'Buffalo', 'Rochester', 'Syracuse', 'Albany', 'Yonkers', 'Brooklyn', 'Queens'],
-        'PA' => ['Philadelphia', 'Pittsburgh', 'Allentown', 'Erie', 'Reading', 'Scranton', 'Bethlehem', 'Lancaster'],
-        'IL' => ['Chicago', 'Aurora', 'Rockford', 'Joliet', 'Naperville', 'Springfield', 'Peoria', 'Elgin'],
-        'OH' => ['Columbus', 'Cleveland', 'Cincinnati', 'Toledo', 'Akron', 'Dayton', 'Parma', 'Canton'],
+        'PA' => %w[Philadelphia Pittsburgh Allentown Erie Reading Scranton Bethlehem Lancaster],
+        'IL' => %w[Chicago Aurora Rockford Joliet Naperville Springfield Peoria Elgin],
+        'OH' => %w[Columbus Cleveland Cincinnati Toledo Akron Dayton Parma Canton],
         'GA' => ['Atlanta', 'Augusta', 'Columbus', 'Savannah', 'Athens', 'Sandy Springs', 'Roswell', 'Macon'],
-        'NC' => ['Charlotte', 'Raleigh', 'Greensboro', 'Durham', 'Winston-Salem', 'Fayetteville', 'Cary', 'Wilmington'],
+        'NC' => %w[Charlotte Raleigh Greensboro Durham Winston-Salem Fayetteville Cary Wilmington],
         'MI' => ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights', 'Ann Arbor', 'Lansing', 'Flint', 'Dearborn']
       }
 
@@ -175,13 +177,11 @@ namespace :db do
 
         # Get real cities for this state or generate names
         city_names = []
-        if real_cities[state_data[:code]]
-          city_names = real_cities[state_data[:code]].take(state_data[:cities])
-        end
+        city_names = real_cities[state_data[:code]].take(state_data[:cities]) if real_cities[state_data[:code]]
 
         # Generate remaining city names if needed
         remaining_count = state_data[:cities] - city_names.length
-        remaining_count.times do |i|
+        remaining_count.times do |_i|
           prefix = city_prefixes.sample
           suffix = city_suffixes.sample
           city_name = "#{prefix}#{suffix}"
@@ -224,7 +224,7 @@ namespace :db do
       puts '   • Country: 1'
       puts "   • States: #{states_created}"
       puts "   • Cities: #{cities_created}"
-      puts "\n" + '=' * 80
+      puts "\n#{'=' * 80}"
     end
 
     # Helper method to get approximate coordinate ranges for each US state
@@ -286,4 +286,3 @@ namespace :db do
     end
   end
 end
-

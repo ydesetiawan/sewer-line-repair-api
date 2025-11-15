@@ -28,7 +28,7 @@ module JsonRendering
       }, status: :internal_server_error
     end
 
-    def render_not_found_exception(message = "Record not found")
+    def render_not_found_exception(message = 'Record not found')
       render json: { error: ErrorInfo.not_found(message).to_hash }, status: :not_found
     end
 
@@ -40,7 +40,7 @@ module JsonRendering
       render json: { error: ErrorInfo::UNAUTHORIZED.to_hash }, status: :unauthorized
     end
 
-    def render_created(message = "Record created")
+    def render_created(message = 'Record created')
       render json: { message: }, status: :created
     end
 

@@ -26,8 +26,15 @@ bin/rails db:create db:migrate
 Seed sample data (optional):
 
 ```bash
+# Quick seed with basic data
 bin/rails db:seed
+
+# Or use custom rake tasks for comprehensive data:
+bundle exec rake db:seed:us_data      # Creates 1 country, 50 states, 1000 cities
+bundle exec rake db:seed:companies    # Creates 2000 companies distributed across cities
 ```
+
+For detailed documentation on seeding tasks, see [`docs/RAKE_TASKS.md`](docs/RAKE_TASKS.md).
 
 Start the server (development):
 

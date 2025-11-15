@@ -12,6 +12,8 @@ class State < ApplicationRecord
   # Callbacks
   before_validation :generate_slug
 
+  scope :by_country, ->(country_id) { where(country_id: country_id) }
+
   private
 
   def generate_slug

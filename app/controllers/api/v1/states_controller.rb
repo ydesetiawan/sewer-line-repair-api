@@ -4,9 +4,19 @@ module Api
 
       # GET /api/v1/states
       def index
-        states = State.all
-                      .page(params[:page].presence&.to_i || 1)
-                      .per(params[:per_page].presence&.to_i || 50)
+        states = State
+        if params['country'].present?
+          country = Country.find_by('slug = ?', params['country'])
+          if country
+            states = states.by_country(country.id)
+          else
+            render_not_found_response
+            return
+          end
+        end
+        states = states
+                 .page(params[:page].presence&.to_i || 1)
+                 .per(params[:per_page].presence&.to_i || 50)
 
         render_collection(StatesSerializer, states)
       end

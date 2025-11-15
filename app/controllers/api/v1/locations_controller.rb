@@ -23,46 +23,6 @@ module Api
         }, status: :ok, content_type: 'application/json'
       end
 
-      # POST /api/v1/locations/geocode
-      def geocode
-        address = geocode_params[:address]
-
-        if address.blank?
-          render_error('Address is required', :bad_request, code: 'missing_address')
-          return
-        end
-
-        coordinates = Geocoder.coordinates(address)
-
-        if coordinates.nil?
-          render_error(
-            'Unable to geocode address',
-            :not_found,
-            code: 'geocode_failed',
-            meta: { suggestions: ['Check the address format', 'Try a different address'] }
-          )
-          return
-        end
-
-        lat, lng = coordinates
-        nearest_city = City.near([lat, lng], 50).first
-        nearby_companies = Company.near([lat, lng], 25).count
-
-        render json: {
-          data: {
-            type: 'geocode_result',
-            attributes: {
-              address: address,
-              latitude: lat,
-              longitude: lng,
-              nearest_city: nearest_city&.name,
-              nearest_state: nearest_city&.state&.name,
-              nearby_companies_count: nearby_companies
-            }
-          }
-        }, status: :ok, content_type: 'application/json'
-      end
-
       private
 
       def search_locations(query)
@@ -76,10 +36,12 @@ module Api
             {
               id: city.id,
               type: 'city',
-              name: city.name,
-              full_name: "#{city.name}, #{city.state.code}",
-              state: city.state.name,
-              state_code: city.state.code
+              attributes: {
+                country: city.state.country.name,
+                state: city.state.name,
+                city: city.name,
+                address: nil # TODO: Add address if needed
+              }
             }
           end
         end
@@ -91,9 +53,12 @@ module Api
             {
               id: state.id,
               type: 'state',
-              name: state.name,
-              code: state.code,
-              full_name: state.name
+              attributes: {
+                country: state.country.name,
+                state: state.name,
+                city: nil,
+                address: nil # TODO: Add address if needed
+              }
             }
           end
         end
@@ -106,23 +71,17 @@ module Api
             {
               id: country.id,
               type: 'country',
-              name: country.name,
-              code: country.code,
-              full_name: country.name
+              attributes: {
+                country: country.name,
+                state: nil,
+                city: nil,
+                address: nil # TODO: Add address if needed
+              }
             }
           end
         end
 
         results
-      end
-
-      def geocode_params
-        # Handle both flat params and nested location params
-        if params[:location].present?
-          params.require(:location).permit(:address)
-        else
-          params.permit(:address)
-        end
       end
     end
   end

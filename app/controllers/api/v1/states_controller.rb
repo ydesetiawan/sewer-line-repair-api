@@ -26,7 +26,7 @@ module Api
                        .page(params[:page].presence&.to_i || 1)
                        .per(params[:per_page].presence&.to_i || 50)
 
-        render_collection(StatesSerializer, states)
+        render_collection(StateSerializer, states)
       end
 
       # GET /api/v1/states/:state_slug/companies
@@ -50,16 +50,14 @@ module Api
 
         # Apply sorting
         companies = apply_sorting(companies)
+        companies = companies.page(params[:page].presence&.to_i || 1)
+                             .per(params[:per_page].presence&.to_i || 50)
 
-        render_jsonapi_collection(
+        render_collection(
+          CompanySerializer,
           companies,
           meta: {
-            state: {
-              id: state.id,
-              name: state.name,
-              code: state.code,
-              slug: state.slug
-            }
+            cities: browse_by_cities(state)
           }
         )
       end
@@ -105,6 +103,18 @@ module Api
         else
           companies.order(name: :asc)
         end
+      end
+
+      def browse_by_cities(state)
+        cities = City.where(state_id: state.id)
+                     .left_joins(:companies)
+                     .select('cities.*, COUNT(companies.id) AS companies_count')
+                     .group('cities.id')
+                     .includes(:state, :country)
+                     .limit(32)
+        {
+          data: cities.map { |city| CitySerializer.new(city).serializable_hash[:data] }
+        }
       end
     end
   end

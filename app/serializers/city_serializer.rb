@@ -4,11 +4,27 @@ class CitySerializer
   set_type :city
   set_id :id
 
-  attributes :name, :slug, :latitude, :longitude, :created_at, :updated_at
+  attributes :name, :slug
 
-  belongs_to :state
+  attribute :companies_count do |state|
+    state.try(:companies_count) || state.companies.size
+  end
 
-  link :self do |city|
-    "/api/v1/cities/#{city.id}"
+  attribute :country do |state|
+    {
+      id: state.country.id,
+      name: state.country.name,
+      code: state.country.code,
+      slug: state.country.slug
+    }
+  end
+
+  attribute :state do |city|
+    {
+      id: city.state.country.id,
+      name: city.state.country.name,
+      code: city.state.country.code,
+      slug: city.state.country.slug
+    }
   end
 end

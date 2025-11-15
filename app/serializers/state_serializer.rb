@@ -1,15 +1,21 @@
-class StateSerializer
-  include JSONAPI::Serializer
+# frozen_string_literal: true
 
+class StateSerializer < ApplicationSerializer
   set_type :state
   set_id :id
 
-  attributes :name, :code, :slug, :created_at, :updated_at
+  attributes :name, :code, :slug
 
-  belongs_to :country
-  has_many :cities
+  attribute :companies_count do |state|
+    state.try(:companies_count) || state.companies.size
+  end
 
-  link :self do |state|
-    "/api/v1/states/#{state.id}"
+  attribute :country do |state|
+    {
+      id: state.country.id,
+      name: state.country.name,
+      code: state.country.code,
+      slug: state.country.slug
+    }
   end
 end

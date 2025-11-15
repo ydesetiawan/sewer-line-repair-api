@@ -17,6 +17,7 @@ AllCops:
     - 'vendor/**/*'
     - 'config/environments/**/*'
     - 'config/initializers/**/*'
+    - 'lib/tasks/**/*'
 
 RSpec/LetSetup:
   Enabled: false

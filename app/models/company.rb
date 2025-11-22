@@ -46,7 +46,7 @@ class Company < ApplicationRecord
 
   # Methods
   def url_path
-    "/sewer-line-repair/#{country.slug}/#{state.slug}/#{city.slug}/#{slug}"
+    "/#{country.slug}/#{state.slug}/#{city.slug}/#{slug}"
   end
 
   def update_rating!

@@ -21,10 +21,10 @@ class CitySerializer
 
   attribute :state do |city|
     {
-      id: city.state.country.id,
-      name: city.state.country.name,
-      code: city.state.country.code,
-      slug: city.state.country.slug
+      id: city.state.id,
+      name: city.state.name,
+      code: city.state.code,
+      slug: city.state.slug
     }
   end
 end

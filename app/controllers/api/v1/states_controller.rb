@@ -43,6 +43,7 @@ module Api
                            .includes(:city, :state, :country, :service_categories)
 
         # Apply filters
+        companies = filter_by_company_name(companies)
         companies = filter_by_city(companies)
         companies = filter_by_service_category(companies)
         companies = filter_by_verification(companies)
@@ -51,18 +52,24 @@ module Api
         # Apply sorting
         companies = apply_sorting(companies)
         companies = companies.page(params[:page].presence&.to_i || 1)
-                             .per(params[:per_page].presence&.to_i || 50)
+                             .per(params[:per_page].presence&.to_i || 2)
 
         render_collection(
           CompanySerializer,
           companies,
           meta: {
-            cities: browse_by_cities(state)
+            cities: params[:city].blank? ? browse_by_cities(state) : nil
           }
         )
       end
 
       private
+
+      def filter_by_company_name(companies)
+        return companies if params[:company_name].blank?
+
+        companies.where('companies.name ILIKE ?', "%#{params[:company_name]}%")
+      end
 
       def filter_by_city(companies)
         return companies if params[:city].blank?
@@ -111,7 +118,7 @@ module Api
                      .select('cities.*, COUNT(companies.id) AS companies_count')
                      .group('cities.id')
                      .includes(:state, :country)
-                     .limit(32)
+                     .limit(12)
         {
           data: cities.map { |city| CitySerializer.new(city).serializable_hash[:data] }
         }

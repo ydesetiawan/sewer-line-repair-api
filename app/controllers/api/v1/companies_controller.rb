@@ -36,7 +36,7 @@ module Api
         ).find_by(id: params[:id])
 
         if company
-          render_jsonapi(company)
+          render_record(CompanyDetailSerializer, company)
         else
           render_error('Company not found', :not_found)
         end

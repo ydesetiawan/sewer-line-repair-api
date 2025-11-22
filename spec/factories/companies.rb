@@ -20,6 +20,17 @@ FactoryBot.define do
     service_guarantee { true }
     service_level { 'premium' }
     specialty { 'Sewer Line Repair' }
+    working_hours do
+      {
+        'Sunday' => 'Open 24 hours',
+        'Monday' => 'Open 24 hours',
+        'Tuesday' => 'Open 24 hours',
+        'Wednesday' => 'Open 24 hours',
+        'Thursday' => 'Open 24 hours',
+        'Friday' => 'Open 24 hours',
+        'Saturday' => 'Open 24 hours'
+      }
+    end
 
     trait :unverified do
       verified_professional { false }

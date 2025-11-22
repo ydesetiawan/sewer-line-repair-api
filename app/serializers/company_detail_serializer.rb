@@ -8,19 +8,38 @@ class CompanyDetailSerializer
              :latitude, :longitude, :description, :average_rating, :total_reviews,
              :verified_professional, :licensed, :insured, :background_checked,
              :certified_partner, :service_guarantee, :service_level, :specialty,
-             :created_at, :updated_at
+             :working_hours, :created_at, :updated_at
 
   attribute :url_path, &:url_path
+  attribute :full_address, &:full_address
 
-  attribute :city do |company|
-    {
-      id: company.city.id,
-      name: company.city.name,
-      slug: company.city.slug
-    }
+  attribute :service_categories do |company|
+    company.service_categories.map do |category|
+      {
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        description: category.description
+      }
+    end
   end
 
-  attribute :full_address, &:full_address
+  attribute :reviews do |company|
+    company.reviews.map do |review|
+      {
+        id: review.id,
+        rating: review.rating,
+        title: review.title,
+        body: review.body,
+        reviewer_name: review.reviewer_name,
+        created_at: review.created_at,
+        updated_at: review.updated_at
+      }
+    end
+  end
+
+
+
 end
 # frozen_string_literal: true
 

@@ -25,6 +25,10 @@ class Company < ApplicationRecord
   validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :average_rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 }
 
+  # Store accessor for JSONB fields (optional, for easier attribute access)
+  # This allows accessing working_hours as a hash
+  attribute :working_hours, :jsonb, default: {}
+
   # Scopes
   scope :near, lambda { |coordinates, radius_in_miles = 20|
     lat, lng = Geocoder::Calculations.extract_coordinates(coordinates)

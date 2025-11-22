@@ -131,7 +131,8 @@ namespace :db do
           background_checked: is_background_checked,
           verified_professional: is_verified,
           average_rating: 0,
-          total_reviews: 0
+          total_reviews: 0,
+          working_hours: generate_working_hours
         )
 
         if company.save
@@ -227,6 +228,86 @@ namespace :db do
 
     def generate_zip_code
       rand(10_000..99_999).to_s
+    end
+
+    def generate_working_hours
+      # Different working hour patterns
+      patterns = [
+        # 24/7 Operation (30% chance)
+        -> {
+          {
+            'Sunday' => 'Open 24 hours',
+            'Monday' => 'Open 24 hours',
+            'Tuesday' => 'Open 24 hours',
+            'Wednesday' => 'Open 24 hours',
+            'Thursday' => 'Open 24 hours',
+            'Friday' => 'Open 24 hours',
+            'Saturday' => 'Open 24 hours'
+          }
+        },
+        # Standard Business Hours - Monday to Friday (20% chance)
+        -> {
+          {
+            'Sunday' => 'Closed',
+            'Monday' => '8:00 AM - 5:00 PM',
+            'Tuesday' => '8:00 AM - 5:00 PM',
+            'Wednesday' => '8:00 AM - 5:00 PM',
+            'Thursday' => '8:00 AM - 5:00 PM',
+            'Friday' => '8:00 AM - 5:00 PM',
+            'Saturday' => 'Closed'
+          }
+        },
+        # Extended Hours - Monday to Saturday (25% chance)
+        -> {
+          {
+            'Sunday' => 'Closed',
+            'Monday' => '7:00 AM - 7:00 PM',
+            'Tuesday' => '7:00 AM - 7:00 PM',
+            'Wednesday' => '7:00 AM - 7:00 PM',
+            'Thursday' => '7:00 AM - 7:00 PM',
+            'Friday' => '7:00 AM - 7:00 PM',
+            'Saturday' => '8:00 AM - 4:00 PM'
+          }
+        },
+        # Early Start with Saturday (15% chance)
+        -> {
+          {
+            'Sunday' => 'Closed',
+            'Monday' => '6:00 AM - 6:00 PM',
+            'Tuesday' => '6:00 AM - 6:00 PM',
+            'Wednesday' => '6:00 AM - 6:00 PM',
+            'Thursday' => '6:00 AM - 6:00 PM',
+            'Friday' => '6:00 AM - 6:00 PM',
+            'Saturday' => '7:00 AM - 3:00 PM'
+          }
+        },
+        # Weekend Service (10% chance)
+        -> {
+          {
+            'Sunday' => '9:00 AM - 5:00 PM',
+            'Monday' => '7:00 AM - 6:00 PM',
+            'Tuesday' => '7:00 AM - 6:00 PM',
+            'Wednesday' => '7:00 AM - 6:00 PM',
+            'Thursday' => '7:00 AM - 6:00 PM',
+            'Friday' => '7:00 AM - 6:00 PM',
+            'Saturday' => '8:00 AM - 5:00 PM'
+          }
+        }
+      ]
+
+      # Weighted random selection
+      rand_value = rand
+      if rand_value < 0.30
+        patterns[0].call
+      elsif rand_value < 0.50
+        patterns[1].call
+      elsif rand_value < 0.75
+        patterns[2].call
+      elsif rand_value < 0.90
+        patterns[3].call
+      else
+        patterns[4].call
+      end
     end
   end
 end

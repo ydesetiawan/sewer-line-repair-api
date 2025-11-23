@@ -25,7 +25,16 @@ module Api
           return
         end
 
-        render_jsonapi_collection(companies)
+        companies = companies.page(params[:page].presence&.to_i || 1)
+                             .per(params[:per_page].presence&.to_i || 2)
+
+        render_collection(
+          CompanySerializer,
+          companies,
+          meta: {
+            cities: nil
+          }
+        )
       end
 
       # GET /api/v1/companies/:id
@@ -33,7 +42,7 @@ module Api
         company = Company.includes(
           :city, :state, :country, :reviews, :service_categories,
           :gallery_images, :certifications, :service_areas
-        ).find_by(id: params[:id])
+        ).find_by(slug: params[:id])
 
         if company
           render_record(CompanyDetailSerializer, company)

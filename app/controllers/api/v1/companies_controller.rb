@@ -6,6 +6,7 @@ module Api
         companies = Company.includes(:city, :state, :country, :service_categories)
 
         # Apply filters
+        companies = filter_by_company_name(companies)
         companies = filter_by_location(companies)
         companies = filter_by_service_category(companies)
         companies = filter_by_verification(companies)
@@ -13,17 +14,6 @@ module Api
 
         # Apply sorting
         companies = apply_sorting(companies)
-
-        # Return error if no results
-        if companies.empty?
-          render_error(
-            'No companies found matching your criteria',
-            :not_found,
-            code: 'no_results',
-            meta: { suggestions: ['Try increasing the search radius', 'Remove some filters'] }
-          )
-          return
-        end
 
         companies = companies.page(params[:page].presence&.to_i || 1)
                              .per(params[:per_page].presence&.to_i || 2)
@@ -98,6 +88,12 @@ module Api
         end
 
         companies
+      end
+
+      def filter_by_company_name(companies)
+        return companies if params[:company_name].blank?
+
+        companies.where('companies.name ILIKE ?', "%#{params[:company_name]}%")
       end
 
       def filter_by_service_category(companies)

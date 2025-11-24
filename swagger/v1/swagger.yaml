@@ -91,7 +91,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: successful
+          description: no results found
           content:
             application/json:
               schema:
@@ -149,28 +149,6 @@ paths:
                             type: integer
                   links:
                     type: object
-        '404':
-          description: no results found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                        code:
-                          type: string
-                        title:
-                          type: string
-                        detail:
-                          type: string
-                        meta:
-                          type: object
   "/api/v1/companies/{id}":
     parameters:
     - name: id
@@ -292,28 +270,6 @@ paths:
                           type: string
                         title:
                           type: string
-  "/api/v1/locations/geocode":
-    post:
-      summary: Geocode an address
-      tags:
-      - Locations
-      parameters: []
-      responses:
-        '200':
-          description: successful
-        '400':
-          description: missing address
-        '404':
-          description: geocode failed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                address:
-                  type: string
-                  example: 1234 Main St, Orlando, FL 32801
   "/api/v1/companies/{company_id}/reviews":
     parameters:
     - name: company_id
@@ -498,19 +454,12 @@ paths:
                   meta:
                     type: object
                     properties:
-                      state:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          code:
-                            type: string
-                          slug:
-                            type: string
                       pagination:
                         type: object
+                      cities:
+                        type:
+                        - object
+                        - 'null'
                   links:
                     type: object
         '404':

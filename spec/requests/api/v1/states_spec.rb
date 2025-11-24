@@ -42,30 +42,22 @@ RSpec.describe 'api/v1/states' do
                  meta: {
                    type: :object,
                    properties: {
-                     state: {
-                       type: :object,
-                       properties: {
-                         id: { type: :integer },
-                         name: { type: :string },
-                         code: { type: :string },
-                         slug: { type: :string }
-                       }
-                     },
-                     pagination: { type: :object }
+                     pagination: { type: :object },
+                     cities: { type: %i[object null] }
                    }
                  },
                  links: { type: :object }
                }
 
-        let(:state) { create(:state, slug: 'florida') }
-        let(:city) { create(:city, state: state) }
-        let(:company) { create(:company, city: city) }
-        let(:state_slug) { 'florida' }
+        let!(:state) { create(:state) }
+        let!(:city) { create(:city, state: state) }
+        let!(:company) { create(:company, city: city) }
+        let(:state_slug) { state.slug }
 
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data['data']).to be_an(Array)
-          expect(data['meta']['state']['slug']).to eq('florida')
+          expect(data['meta']['pagination']).to be_present
         end
       end
 

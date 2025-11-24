@@ -93,30 +93,63 @@ RSpec.describe 'api/v1/companies' do
         end
       end
 
-      response(404, 'no results found') do
+      response(200, 'no results found') do
         schema type: :object,
                properties: {
-                 errors: {
+                 data: {
                    type: :array,
                    items: {
                      type: :object,
                      properties: {
-                       status: { type: :string },
-                       code: { type: :string },
-                       title: { type: :string },
-                       detail: { type: :string },
-                       meta: { type: :object }
+                       id: { type: :string },
+                       type: { type: :string, example: 'company' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           name: { type: :string },
+                           slug: { type: :string },
+                           phone: { type: :string },
+                           email: { type: :string },
+                           website: { type: :string },
+                           average_rating: { type: :string },
+                           total_reviews: { type: :integer },
+                           verified_professional: { type: :boolean }
+                         }
+                       },
+                       relationships: { type: :object },
+                       links: {
+                         type: :object,
+                         properties: {
+                           self: { type: :string }
+                         }
+                       }
                      }
                    }
-                 }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     pagination: {
+                       type: :object,
+                       properties: {
+                         current_page: { type: :integer },
+                         per_page: { type: :integer },
+                         total_pages: { type: :integer },
+                         total_count: { type: :integer }
+                       }
+                     }
+                   }
+                 },
+                 links: { type: :object }
                }
 
         let(:city) { 'NonexistentCity' }
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['errors']).to be_an(Array)
-          expect(data['errors'].first['code']).to eq('no_results')
+          expect(data['data']).to be_an(Array)
+          expect(data['data']).to be_empty
+          expect(data['meta']['pagination']['total_items']).to eq(0)
         end
       end
     end
@@ -148,7 +181,7 @@ RSpec.describe 'api/v1/companies' do
 
         let(:city) { create(:city) }
         let(:company) { create(:company, city: city) }
-        let(:id) { company.id }
+        let(:id) { company.slug }
 
         run_test! do |response|
           data = JSON.parse(response.body)

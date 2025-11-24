@@ -15,9 +15,16 @@ class City < ApplicationRecord
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_nil: true
 
   # Scopes
-  scope :near, lambda { |coordinates, radius_in_miles = 20|
+  scope :near, lambda { |coordinates, radius = 20, options = {}|
     lat, lng = Geocoder::Calculations.extract_coordinates(coordinates)
     return none unless lat && lng
+
+    # Convert radius to miles if needed
+    radius_in_miles = if options[:units] == :km
+                        radius * 0.621371 # Convert km to miles
+                      else
+                        radius
+                      end
 
     earth_radius = 3958.8 # miles
 

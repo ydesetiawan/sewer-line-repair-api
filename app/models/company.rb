@@ -27,7 +27,7 @@ class Company < ApplicationRecord
 
   # Store accessor for JSONB fields (optional, for easier attribute access)
   # This allows accessing working_hours as a hash
-  attribute :working_hours, :jsonb, default: {}
+  attribute :working_hours, :jsonb, default: -> { {} }
 
   # Scopes
   scope :near, lambda { |coordinates, radius_in_miles = 20|

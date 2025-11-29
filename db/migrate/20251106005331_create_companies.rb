@@ -1,6 +1,7 @@
 class CreateCompanies < ActiveRecord::Migration[8.1]
   def change
-    create_table :companies do |t|
+    create_table :companies, id: false do |t|
+      t.string :id, limit: 255, primary_key: true, null: false
       t.references :city, null: false, foreign_key: true, index: true
       t.string :name, null: false
       t.string :slug, null: false

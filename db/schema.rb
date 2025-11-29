@@ -46,7 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
     t.string "certificate_number"
     t.string "certificate_url"
     t.string "certification_name", null: false
-    t.bigint "company_id", null: false
+    t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
     t.date "expiry_date"
     t.date "issue_date"
@@ -69,7 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
     t.index ["state_id"], name: "index_cities_on_state_id"
   end
 
-  create_table "companies", force: :cascade do |t|
+  create_table "companies", id: { type: :string, limit: 255 }, force: :cascade do |t|
     t.decimal "average_rating", precision: 3, scale: 2, default: "0.0"
     t.boolean "background_checked", default: false
     t.boolean "certified_partner", default: false
@@ -103,7 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
 
   create_table "company_service_areas", force: :cascade do |t|
     t.bigint "city_id", null: false
-    t.bigint "company_id", null: false
+    t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["city_id"], name: "index_company_service_areas_on_city_id"
@@ -112,7 +112,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   end
 
   create_table "company_services", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
     t.bigint "service_category_id", null: false
     t.datetime "updated_at", null: false
@@ -132,7 +132,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   end
 
   create_table "gallery_images", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
     t.text "description"
     t.string "image_type"
@@ -145,7 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
     t.integer "rating", null: false
     t.date "review_date", null: false

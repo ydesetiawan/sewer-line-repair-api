@@ -1,7 +1,7 @@
 class CreateReviews < ActiveRecord::Migration[8.1]
   def change
     create_table :reviews do |t|
-      t.references :company, null: false, foreign_key: true, index: true
+      t.string :company_id, limit: 255, null: false, index: true
       t.string :reviewer_name, null: false
       t.date :review_date, null: false
       t.integer :rating, null: false
@@ -13,6 +13,7 @@ class CreateReviews < ActiveRecord::Migration[8.1]
 
     add_index :reviews, [:company_id, :review_date]
     add_index :reviews, :rating
+    add_foreign_key :reviews, :companies, column: :company_id, primary_key: :id
     add_check_constraint :reviews, "rating >= 1 AND rating <= 5", name: "rating_range"
   end
 end

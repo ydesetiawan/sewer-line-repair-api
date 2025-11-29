@@ -3,6 +3,7 @@ class Company < ApplicationRecord
   geocoded_by :full_address
 
   # Callbacks
+  before_create :generate_string_id
   before_validation :generate_slug
   after_validation :geocode, if: :should_geocode?
 
@@ -70,6 +71,17 @@ class Company < ApplicationRecord
   end
 
   private
+
+  def generate_string_id
+    # Only generate ID if not manually provided
+    return if id.present?
+
+    # Generate a unique string ID similar to Google Place ID format
+    loop do
+      self.id = "CMP#{SecureRandom.alphanumeric(20)}"
+      break unless Company.exists?(id: self.id)
+    end
+  end
 
   def generate_slug
     self.slug = name.parameterize if name.present? && slug.blank?

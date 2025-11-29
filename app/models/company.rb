@@ -1,9 +1,5 @@
 class Company < ApplicationRecord
-  # Geocoding
-  geocoded_by :full_address
-
   before_validation :generate_slug
-  after_validation :geocode, if: :should_geocode?
   # Callbacks
   before_create :generate_string_id
 
@@ -15,13 +11,12 @@ class Company < ApplicationRecord
   has_many :company_services, dependent: :destroy
   has_many :service_categories, through: :company_services
   has_many :gallery_images, dependent: :destroy
-  has_many :certifications, dependent: :destroy
 
   # Validations
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: { scope: :city_id }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
+  validates :site, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :logo_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :booking_appointment_link, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) },
                                        allow_blank: true
@@ -69,10 +64,6 @@ class Company < ApplicationRecord
     save
   end
 
-  def full_address
-    [street_address, city&.name, state&.name, zip_code].compact.join(', ')
-  end
-
   private
 
   def generate_string_id
@@ -88,9 +79,5 @@ class Company < ApplicationRecord
 
   def generate_slug
     self.slug = name.parameterize if name.present? && slug.blank?
-  end
-
-  def should_geocode?
-    (latitude.blank? || longitude.blank?) && street_address.present?
   end
 end

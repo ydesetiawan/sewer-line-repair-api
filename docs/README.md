@@ -23,6 +23,7 @@ All project documentation has been moved to the `docs/` folder for clarity and o
 - **[API_COMPLETE_GUIDE.md](API_COMPLETE_GUIDE.md)** - Complete API guide
 - **[RSPEC_SWAGGER_COMPLETE.md](RSPEC_SWAGGER_COMPLETE.md)** - RSpec and Swagger setup
 - **[CSV_IMPORT_API.md](CSV_IMPORT_API.md)** - CSV Import API documentation
+- **[CSV_IMPORT_GALLERIES_REVIEWS_API.md](CSV_IMPORT_GALLERIES_REVIEWS_API.md)** - Import gallery images and reviews from CSV files
 
 ### Setup & Configuration
 - **[SETUP_COMPLETE.md](SETUP_COMPLETE.md)** - Complete setup guide

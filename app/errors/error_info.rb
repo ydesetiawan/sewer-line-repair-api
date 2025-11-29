@@ -82,6 +82,28 @@ module ErrorInfo # rubocop:disable Metrics/ModuleLength
     'The request could not be completed due to a conflict with the current state of the resource.'
   )
 
+  # Import-specific errors
+  MISSING_FILE = ErrorData.new(
+    'MISSING_FILE',
+    'import',
+    'Missing File',
+    'No file provided'
+  )
+
+  INVALID_FILE_FORMAT = ErrorData.new(
+    'INVALID_FILE_FORMAT',
+    'import',
+    'Invalid File Format',
+    'The uploaded file is not a valid CSV file. Please upload a CSV file with the correct format.'
+  )
+
+  FILE_TOO_LARGE = ErrorData.new(
+    'FILE_TOO_LARGE',
+    'import',
+    'File Size Exceeded',
+    'The uploaded file exceeds the maximum allowed size of 50MB.'
+  )
+
   # Factory methods for creating custom errors
   def self.unprocessable_entity(error_message = nil, service_name = nil, custom_code = nil, title = nil) # rubocop:disable Metrics/ParameterLists
     ErrorData.new(

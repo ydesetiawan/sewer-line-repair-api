@@ -8,7 +8,7 @@ This API endpoint allows you to import company data from CSV files and distribut
 
 ## CSV Format
 The CSV file should contain the following columns:
-`csvname`, `name + address`, `site`, `subtypes`, `phone`, `full_address`, `borough`, `street`, `city`, `postal_code`, `state`, `country`, `country_code`, `latitude`, `longitude`, `time_zone`, `rating`, `reviews`, `street_view`, `working_hours`, `about`, `logo`, `verified`, `booking_appointment_link`, `location_link`, `place_id`
+`csvname`, `name_with_address`, `site`, `subtypes`, `phone`, `full_address`, `borough`, `street`, `city`, `postal_code`, `state`, `country`, `country_code`, `latitude`, `longitude`, `time_zone`, `rating`, `reviews`, `street_view`, `working_hours`, `about`, `logo`, `verified`, `booking_appointment_link`, `location_link`, `place_id`
 
 ## Database Schema
 

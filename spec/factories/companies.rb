@@ -5,22 +5,14 @@ FactoryBot.define do
     sequence(:name) { |n| "Elite Sewer Solutions #{n}" }
     sequence(:phone) { |n| "(555) 555-#{format('%04d', n)}" }
     sequence(:email) { |n| "contact#{n}@elitesewerco.com" }
-    sequence(:website) { |n| "https://www.elitesewerco#{n}.com" }
+    sequence(:site) { |n| "https://www.elitesewerco#{n}.com" }
     street_address { '1234 Main St' }
-    sequence(:zip_code) { |n| format('%05d', 10_000 + n) }
+    postal_code { '10001' }
     latitude { 28.5383 }
     longitude { -81.3792 }
-    description { 'Professional sewer and drain services with over 15 years of experience. Licensed, insured, and available 24/7 for emergency services.' }
     average_rating { 4.5 }
     total_reviews { 0 }
     verified_professional { true }
-    licensed { true }
-    insured { true }
-    background_checked { true }
-    certified_partner { false }
-    service_guarantee { true }
-    service_level { 'premium' }
-    specialty { 'Sewer Line Repair' }
     working_hours do
       {
         'Sunday' => 'Open 24 hours',
@@ -47,13 +39,6 @@ FactoryBot.define do
 
     trait :unverified do
       verified_professional { false }
-      licensed { false }
-      insured { false }
-      background_checked { false }
-    end
-
-    trait :certified do
-      certified_partner { true }
     end
 
     trait :high_rated do

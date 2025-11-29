@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     namespace :backoffice do
       namespace :v1 do
         post 'import_companies', to: 'import_companies#create'
+        post 'import_galleries', to: 'import_galleries#create'
+        post 'import_reviews', to: 'import_reviews#create'
       end
     end
   end

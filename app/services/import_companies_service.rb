@@ -5,172 +5,216 @@ class ImportCompaniesService
 
   def initialize(file)
     @file = file
-    @results = {
-      total: 0,
-      created: 0,
-      updated: 0,
+    @summary = {
+      total_rows: 0,
+      successful: 0,
       failed: 0,
-      errors: []
+      countries_created: 0,
+      countries_updated: 0,
+      states_created: 0,
+      states_updated: 0,
+      cities_created: 0,
+      cities_updated: 0,
+      companies_created: 0,
+      companies_updated: 0
     }
+    @errors = []
   end
 
   def call
-    begin
-      csv_data = File.read(file.tempfile.path)
-      csv = CSV.parse(csv_data, headers: true)
+    return Result.failure(error: 'No file provided', code: 'MISSING_FILE') if @file.nil?
 
-      csv.each_with_index do |row, index|
-        @results[:total] += 1
-        process_row(row, index)
+    begin
+      CSV.foreach(@file.path, headers: true) do |row|
+        @summary[:total_rows] += 1
+        process_row(row)
       end
 
-      Result.success(data: @results)
+      message = if @summary[:successful].positive?
+                  "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully."
+                else
+                  "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details."
+                end
+
+      Result.success(data: {
+                       message: message,
+                       summary: @summary,
+                       errors: @errors
+                     })
     rescue CSV::MalformedCSVError => e
-      Result.failure(error: "Invalid CSV format: #{e.message}", code: 'INVALID_CSV')
+      Result.failure(error: "Invalid CSV format: #{e.message}", code: 'INVALID_FILE_FORMAT')
     rescue StandardError => e
-      Result.failure(error: "Import failed: #{e.message}", code: 'IMPORT_ERROR')
+      Result.failure(error: "Unexpected error: #{e.message}", code: 'INTERNAL_ERROR')
     end
   end
 
   private
 
-  def process_row(row, index)
-    # Find or initialize company by ID or name
-    company = find_or_initialize_company(row)
+  def process_row(row)
+    ActiveRecord::Base.transaction do
+      # 1. Find or create country
+      country = find_or_create_country(row)
+      return unless country
 
-    # Map CSV columns to company attributes
-    company.assign_attributes(map_attributes(row))
+      # 2. Find or create state
+      state = find_or_create_state(row, country)
+      return unless state
 
-    if company.save
-      company.new_record? ? @results[:created] += 1 : @results[:updated] += 1
-    else
-      @results[:failed] += 1
-      @results[:errors] << {
-        row: index + 2, # +2 because index is 0-based and header is row 1
-        errors: company.errors.full_messages
-      }
+      # 3. Find or create city
+      city = find_or_create_city(row, state)
+      return unless city
+
+      # 4. Find or create company
+      company = find_or_create_company(row, city)
+      return unless company
+
+      @summary[:successful] += 1
     end
   rescue StandardError => e
-    @results[:failed] += 1
-    @results[:errors] << {
-      row: index + 2,
-      errors: [e.message]
+    @summary[:failed] += 1
+    @errors << {
+      row: @summary[:total_rows],
+      place_id: row['place_id'],
+      company_name: row['name'],
+      error: {
+        code: 'VALIDATION_ERROR',
+        service: 'import_companies',
+        title: 'Import Error',
+        message: e.message
+      }
     }
   end
 
-  def find_or_initialize_company(row)
-    # Try to find by ID if provided
-    if row['id'].present?
-      Company.find_or_initialize_by(id: row['id'])
-    elsif row['name'].present? && row['city_id'].present?
-      # Find by name and city
-      Company.find_or_initialize_by(
-        name: row['name'],
-        city_id: row['city_id']
-      )
+  def find_or_create_country(row)
+    return nil if row['country_code'].blank? || row['country'].blank?
+
+    country = Country.find_by(code: row['country_code'])
+
+    if country
+      @summary[:countries_updated] += 1 if country.update(name: row['country'])
     else
-      Company.new
+      country = Country.create!(
+        code: row['country_code'],
+        name: row['country'],
+        slug: row['country'].parameterize
+      )
+      @summary[:countries_created] += 1
     end
+
+    country
   end
 
-  def map_attributes(row)
-    attrs = {}
+  def find_or_create_state(row, country)
+    return nil if row['state'].blank?
 
-    # Basic information
-    attrs[:id] = row['id'] if row['id'].present?
-    attrs[:name] = row['name'] if row['name'].present?
-    attrs[:phone] = row['phone'] if row['phone'].present?
-    attrs[:email] = row['email'] if row['email'].present?
-    attrs[:website] = row['website'] if row['website'].present?
+    state = State.find_by(name: row['state'], country: country)
 
-    # Address information
-    attrs[:street_address] = row['street_address'] if row['street_address'].present?
-    attrs[:zip_code] = row['zip_code'] if row['zip_code'].present?
-    attrs[:borough] = row['borough'] if row['borough'].present?
+    if state
+      @summary[:states_updated] += 1
+    else
+      state = State.create!(
+        country: country,
+        name: row['state'],
+        code: generate_state_code(row['state']),
+        slug: row['state'].parameterize
+      )
+      @summary[:states_created] += 1
+    end
 
-    # Location
-    attrs[:city_id] = row['city_id'] if row['city_id'].present?
-    attrs[:latitude] = row['latitude'].to_f if row['latitude'].present?
-    attrs[:longitude] = row['longitude'].to_f if row['longitude'].present?
+    state
+  end
 
-    # Description and details
-    attrs[:description] = row['description'] if row['description'].present?
-    attrs[:specialty] = row['specialty'] if row['specialty'].present?
-    attrs[:service_level] = row['service_level'] if row['service_level'].present?
+  def find_or_create_city(row, state)
+    return nil if row['city'].blank?
 
-    # Verification flags
-    attrs[:verified_professional] = parse_boolean(row['verified_professional'])
-    attrs[:licensed] = parse_boolean(row['licensed'])
-    attrs[:insured] = parse_boolean(row['insured'])
-    attrs[:background_checked] = parse_boolean(row['background_checked'])
-    attrs[:certified_partner] = parse_boolean(row['certified_partner'])
-    attrs[:service_guarantee] = parse_boolean(row['service_guarantee'])
+    city = City.find_by(name: row['city'], state: state)
 
-    # Additional fields
-    attrs[:logo_url] = row['logo_url'] if row['logo_url'].present?
-    attrs[:booking_appointment_link] = row['booking_appointment_link'] if row['booking_appointment_link'].present?
-    attrs[:timezone] = row['timezone'] if row['timezone'].present?
+    if city
+      @summary[:cities_updated] += 1
+    else
+      city = City.create!(
+        state: state,
+        name: row['city'],
+        slug: row['city'].parameterize
+      )
+      @summary[:cities_created] += 1
+    end
 
-    # JSONB fields
-    attrs[:about] = parse_json(row['about']) if row['about'].present?
-    attrs[:working_hours] = parse_json(row['working_hours']) if row['working_hours'].present?
+    city
+  end
 
-    # Array fields
-    attrs[:subtypes] = parse_array(row['subtypes']) if row['subtypes'].present?
+  def find_or_create_company(row, city)
+    return nil if row['place_id'].blank?
 
-    attrs.compact
+    company = Company.find_or_initialize_by(id: row['place_id'])
+    is_new = company.new_record?
+
+    company.assign_attributes(
+      city: city,
+      borough: row['borough'],
+      name: row['name'],
+      slug: row['name'].parameterize || company.slug,
+      phone: row['phone'],
+      site: row['site'],
+      full_address: row['full_address'],
+      street_address: row['street'],
+      postal_code: row['postal_code'],
+      latitude: parse_decimal(row['latitude']),
+      longitude: parse_decimal(row['longitude']),
+      average_rating: parse_decimal(row['rating']),
+      total_reviews: row['reviews']&.to_i || 0,
+      verified_professional: parse_boolean(row['verified']),
+      logo_url: row['logo'],
+      booking_appointment_link: row['booking_appointment_link'],
+      location_link: row['location_link'],
+      timezone: row['time_zone'],
+      about: parse_json(row['about']),
+      working_hours: parse_json(row['working_hours']),
+      subtypes: parse_array(row['subtypes'])
+    )
+
+    company.save!
+
+    if is_new
+      @summary[:companies_created] += 1
+    else
+      @summary[:companies_updated] += 1
+    end
+
+    company
+  end
+
+  def generate_state_code(state_name)
+    # Simple state code generation - take first 2 letters and uppercase
+    state_name[0..1].upcase
+  end
+
+  def parse_decimal(value)
+    return nil if value.blank?
+
+    value.to_f
   end
 
   def parse_boolean(value)
-    return nil if value.blank?
+    return false if value.blank?
 
-    %w[true 1 yes y].include?(value.to_s.downcase)
+    %w[TRUE true 1 yes].include?(value.to_s)
   end
 
   def parse_json(value)
-    return nil if value.blank?
+    return {} if value.blank?
 
-    JSON.parse(value)
-  rescue JSON::ParserError
-    nil
+    begin
+      JSON.parse(value)
+    rescue JSON::ParserError
+      {}
+    end
   end
 
   def parse_array(value)
     return [] if value.blank?
 
-    # Handle JSON array or comma-separated string
-    if value.start_with?('[')
-      JSON.parse(value)
-    else
-      value.split(',').map(&:strip)
-    end
-  rescue JSON::ParserError
+    # Handle comma-separated values
     value.split(',').map(&:strip)
   end
 end
-
-# Result object for service responses
-class Result
-  attr_reader :data, :error, :code
-
-  def initialize(success:, data: nil, error: nil, code: nil)
-    @success = success
-    @data = data
-    @error = error
-    @code = code
-  end
-
-  def success?
-    @success
-  end
-
-  def self.success(data: nil)
-    new(success: true, data: data)
-  end
-
-  def self.failure(error:, code: nil)
-    new(success: false, error: error, code: code)
-  end
-end
-
-

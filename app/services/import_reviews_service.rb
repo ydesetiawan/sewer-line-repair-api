@@ -74,7 +74,7 @@ class ImportReviewsService
     raise "Company with place_id '#{row['place_id']}' not found" unless company
 
     # Validate rating
-    rating = row['reviews_rating']&.to_i
+    rating = row['review_rating']&.to_i
     raise "Invalid rating value. Expected 1-5, got: #{rating}" if rating && (rating < 1 || rating > 5)
 
     # Find existing review by company_id and review_link (or review_datetime_utc + author_title)

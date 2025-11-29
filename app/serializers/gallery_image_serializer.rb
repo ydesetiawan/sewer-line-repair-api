@@ -4,7 +4,7 @@ class GalleryImageSerializer
   set_type :gallery_image
   set_id :id
 
-  attributes :title, :description, :position, :image_type, :created_at, :updated_at
+  attributes :image_url, :thumbnail_url, :video_url, :image_datetime_utc, :created_at, :updated_at
 
   belongs_to :company
 

@@ -1,4 +1,4 @@
-class Result
+class ImportCsvResultSerializer
   attr_reader :data, :error, :code
 
   def initialize(success:, data: nil, error: nil, code: nil)

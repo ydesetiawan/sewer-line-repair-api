@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Api::Backoffice::V1::ImportReviews', type: :request do
+RSpec.describe 'Api::Backoffice::V1::ImportReviews' do
   path '/api/backoffice/v1/import_reviews' do
     post 'Import reviews from CSV' do
       tags 'Backoffice - Import'

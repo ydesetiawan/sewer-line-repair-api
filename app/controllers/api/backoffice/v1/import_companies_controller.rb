@@ -8,7 +8,7 @@ module Api
           file = params[:file]
           service_name = 'import_companies'
 
-          return unless validate_import_file(file, service_name)
+          return unless validate_import_file?(file, service_name)
 
           result = ImportCompaniesService.new(file).call
 

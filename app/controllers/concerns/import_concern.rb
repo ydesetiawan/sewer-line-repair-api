@@ -3,7 +3,7 @@ module ImportConcern
 
   private
 
-  def validate_import_file(file, service_name)
+  def validate_import_file?(file, service_name)
     # Validate file presence
     if file.blank? || !file.respond_to?(:read)
       render_error(ErrorInfo::MISSING_FILE, service_name, :bad_request)

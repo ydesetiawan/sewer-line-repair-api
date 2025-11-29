@@ -108,9 +108,9 @@
 
     def call
       # Implementation
-      Result.success(data: @order)
+      ImportCsvResultSerializer.success(data: @order)
     rescue StandardError => e
-      Result.failure(error: e.message)
+      ImportCsvResultSerializer.failure(error: e.message)
     end
   end
   ```

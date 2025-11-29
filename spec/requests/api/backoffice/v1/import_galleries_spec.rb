@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Api::Backoffice::V1::ImportGalleries', type: :request do
+RSpec.describe 'Api::Backoffice::V1::ImportGalleries' do
   path '/api/backoffice/v1/import_galleries' do
     post 'Import gallery images from CSV' do
       tags 'Backoffice - Import'

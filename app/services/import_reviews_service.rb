@@ -16,7 +16,7 @@ class ImportReviewsService
   end
 
   def call
-    return Result.failure(error: 'No file provided', code: 'MISSING_FILE') if @file.nil?
+    return ImportCsvResultSerializer.failure(error: 'No file provided', code: 'MISSING_FILE') if @file.nil?
 
     begin
       CSV.foreach(@file.path, headers: true) do |row|
@@ -30,15 +30,15 @@ class ImportReviewsService
                   "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details."
                 end
 
-      Result.success(data: {
-                       message: message,
-                       summary: @summary,
-                       errors: @errors
-                     })
+      ImportCsvResultSerializer.success(data: {
+                                          message: message,
+                                          summary: @summary,
+                                          errors: @errors
+                                        })
     rescue CSV::MalformedCSVError => e
-      Result.failure(error: "Invalid CSV format: #{e.message}", code: 'INVALID_FILE_FORMAT')
+      ImportCsvResultSerializer.failure(error: "Invalid CSV format: #{e.message}", code: 'INVALID_FILE_FORMAT')
     rescue StandardError => e
-      Result.failure(error: "Unexpected error: #{e.message}", code: 'INTERNAL_ERROR')
+      ImportCsvResultSerializer.failure(error: "Unexpected error: #{e.message}", code: 'INTERNAL_ERROR')
     end
   end
 

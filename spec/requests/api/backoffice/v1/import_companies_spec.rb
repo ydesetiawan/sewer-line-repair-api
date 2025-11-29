@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Api::Backoffice::V1::ImportCompanies', type: :request do
+RSpec.describe 'Api::Backoffice::V1::ImportCompanies' do
   describe 'POST /api/backoffice/v1/import_companies' do
     let(:csv_content) do
       <<~CSV
@@ -20,7 +20,7 @@ RSpec.describe 'Api::Backoffice::V1::ImportCompanies', type: :request do
         expect(City.count).to eq(1)
         expect(State.count).to eq(1)
         expect(Country.count).to eq(1)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['attributes']['summary']['successful']).to eq(1)
 
         company = Company.last

@@ -2,10 +2,10 @@ class Company < ApplicationRecord
   # Geocoding
   geocoded_by :full_address
 
-  # Callbacks
-  before_create :generate_string_id
   before_validation :generate_slug
   after_validation :geocode, if: :should_geocode?
+  # Callbacks
+  before_create :generate_string_id
 
   # Associations
   belongs_to :city
@@ -23,7 +23,8 @@ class Company < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :logo_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
-  validates :booking_appointment_link, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
+  validates :booking_appointment_link, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) },
+                                       allow_blank: true
   validates :average_rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 }
 
   # Store accessor for JSONB fields (optional, for easier attribute access)
@@ -81,7 +82,7 @@ class Company < ApplicationRecord
     # Generate a unique string ID similar to Google Place ID format
     loop do
       self.id = "CMP#{SecureRandom.alphanumeric(20)}"
-      break unless Company.exists?(id: self.id)
+      break unless Company.exists?(id: id)
     end
   end
 

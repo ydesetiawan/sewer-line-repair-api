@@ -83,7 +83,7 @@ company_names = [
 ]
 
 companies = []
-cities.each_with_index do |city, idx| # rubocop:disable Metrics/BlockLength
+cities.each_with_index do |city, idx|
   company = Company.create!(
     city: city,
     name: company_names[idx],
@@ -134,14 +134,16 @@ companies.each do |company|
         'Fair pricing and excellent customer service.',
         "Highly skilled technicians who know what they're doing."
       ].sample,
-      review_img_urls: rand(0..3).times.map { |j| "https://cdn.example.com/reviews/img#{rand(1..1000)}.jpg" },
+      review_img_urls: rand(0..3).times.map { |_j| "https://cdn.example.com/reviews/img#{rand(1..1000)}.jpg" },
       review_link: "https://maps.google.com/reviews/#{company.id}/#{i}",
-      owner_answer: has_owner_answer ? [
-        'Thank you for your kind words!',
-        'We appreciate your feedback and are glad we could help.',
-        'Your satisfaction is our priority. Thanks for choosing us!',
-        'Thank you for the review. We look forward to serving you again.'
-      ].sample : nil,
+      owner_answer: if has_owner_answer
+                      [
+                        'Thank you for your kind words!',
+                        'We appreciate your feedback and are glad we could help.',
+                        'Your satisfaction is our priority. Thanks for choosing us!',
+                        'Thank you for the review. We look forward to serving you again.'
+                      ].sample
+                    end,
       owner_answer_timestamp_datetime_utc: has_owner_answer ? (review_datetime + rand(1..7).days) : nil
     )
   end

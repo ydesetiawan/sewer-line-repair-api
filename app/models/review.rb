@@ -10,9 +10,9 @@ class Review < ApplicationRecord
   # Store accessor for array fields
   attribute :review_img_urls, :string, array: true, default: -> { [] }
 
+  after_destroy :update_company_rating
   # Callbacks
   after_save :update_company_rating
-  after_destroy :update_company_rating
 
   # Scopes
   scope :recent, -> { order(review_datetime_utc: :desc) }

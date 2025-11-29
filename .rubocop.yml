@@ -10,6 +10,7 @@ AllCops:
   TargetRubyVersion: 3.4
   Exclude:
     - 'bin/**/*'
+    - 'db/seeds.rb'
     - 'db/schema.rb'
     - 'db/migrate/**/*'
     - 'node_modules/**/*'

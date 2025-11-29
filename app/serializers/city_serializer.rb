@@ -6,16 +6,16 @@ class CitySerializer
 
   attributes :name, :slug
 
-  attribute :companies_count do |state|
-    state.try(:companies_count) || state.companies.size
+  attribute :companies_count do |city|
+    city.try(:companies_count) || city.companies.size
   end
 
-  attribute :country do |state|
+  attribute :country do |city|
     {
-      id: state.country.id,
-      name: state.country.name,
-      code: state.country.code,
-      slug: state.country.slug
+      id: city.country.id,
+      name: city.country.name,
+      code: city.country.code,
+      slug: city.country.slug
     }
   end
 

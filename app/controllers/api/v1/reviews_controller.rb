@@ -31,33 +31,32 @@ module Api
       end
 
       def filter_by_verification(reviews)
-        return reviews unless params[:verified_only] == 'true'
-
-        reviews.where(verified_review: true)
+        # Verification field removed - just return all reviews
+        reviews
       end
 
       def filter_by_rating(reviews)
         return reviews if params[:min_rating].blank?
 
         min_rating = params[:min_rating].to_f
-        reviews.where('rating >= ?', min_rating) if min_rating.positive?
+        reviews.where('review_rating >= ?', min_rating) if min_rating.positive?
       end
 
       def apply_sorting(reviews)
-        sort_param = params[:sort] || '-review_date'
+        sort_param = params[:sort] || '-review_datetime_utc'
 
         case sort_param
-        when 'rating', '-rating'
-          reviews.order(rating: sort_param.start_with?('-') ? :desc : :asc)
-        when 'review_date', '-review_date'
-          reviews.order(review_date: sort_param.start_with?('-') ? :desc : :asc)
+        when 'review_rating', '-review_rating'
+          reviews.order(review_rating: sort_param.start_with?('-') ? :desc : :asc)
+        when 'review_datetime_utc', '-review_datetime_utc'
+          reviews.order(review_datetime_utc: sort_param.start_with?('-') ? :desc : :asc)
         else
-          reviews.order(review_date: :desc)
+          reviews.order(review_datetime_utc: :desc)
         end
       end
 
       def calculate_rating_distribution(reviews)
-        distribution = reviews.group(:rating).count
+        distribution = reviews.group(:review_rating).count
         {
           '5': distribution[5] || 0,
           '4': distribution[4] || 0,

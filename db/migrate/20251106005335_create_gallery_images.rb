@@ -2,12 +2,10 @@ class CreateGalleryImages < ActiveRecord::Migration[8.1]
   def change
     create_table :gallery_images do |t|
       t.string :company_id, limit: 255, null: false, index: true
-      t.string :title
-      t.text :description
       t.string :image_url, null: false
       t.string :thumbnail_url
-      t.integer :position, default: 0, null: false
-      t.string :image_type
+      t.string :video_url
+      t.timestamps :image_datetime_utc
 
       t.timestamps
     end

@@ -9,12 +9,10 @@ RSpec.describe 'api/v1/reviews' do
       produces 'application/json'
       description 'Get paginated list of reviews for a specific company'
 
-      parameter name: :verified_only, in: :query, type: :boolean, required: false,
-                description: 'Show only verified reviews'
       parameter name: :min_rating, in: :query, type: :number, required: false,
                 description: 'Minimum rating filter (1-5)'
       parameter name: :sort, in: :query, type: :string, required: false,
-                description: 'Sort by field (rating, review_date, -rating, -review_date)'
+                description: 'Sort by field (review_rating, review_datetime_utc, -review_rating, -review_datetime_utc)'
       parameter name: :page, in: :query, type: :integer, required: false,
                 description: 'Page number (default: 1)'
       parameter name: :per_page, in: :query, type: :integer, required: false,
@@ -33,11 +31,15 @@ RSpec.describe 'api/v1/reviews' do
                        attributes: {
                          type: :object,
                          properties: {
-                           customer_name: { type: :string },
-                           rating: { type: :integer },
+                           author_title: { type: :string },
+                           author_image: { type: :string },
+                           review_rating: { type: :integer },
                            review_text: { type: :string },
-                           review_date: { type: :string, format: :date },
-                           verified_review: { type: :boolean }
+                           review_datetime_utc: { type: :string, format: :datetime },
+                           review_link: { type: :string },
+                           review_img_urls: { type: :array, items: { type: :string } },
+                           owner_answer: { type: :string },
+                           owner_answer_timestamp_datetime_utc: { type: :string, format: :datetime }
                          }
                        },
                        relationships: { type: :object },

@@ -5,13 +5,11 @@ class CreateGalleryImages < ActiveRecord::Migration[8.1]
       t.string :image_url, null: false
       t.string :thumbnail_url
       t.string :video_url
-      t.timestamps :image_datetime_utc
+      t.datetime :image_datetime_utc
 
       t.timestamps
     end
 
-    add_index :gallery_images, [:company_id, :position]
-    add_index :gallery_images, :image_type
     add_foreign_key :gallery_images, :companies, column: :company_id, primary_key: :id
   end
 end

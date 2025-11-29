@@ -2,15 +2,6 @@ source 'https://rubygems.org'
 
 # Rails API framework
 gem 'rails', '~> 8.1.1'
-gem 'rails', '~> 8.1.1', require: %w[
-  active_record/railtie
-  action_controller/railtie
-  action_view/railtie
-  action_mailer/railtie
-  active_job/railtie
-  action_cable/railtie
-  rails/test_unit/railtie
-]
 
 # PostgreSQL database
 gem 'pg', '~> 1.1'

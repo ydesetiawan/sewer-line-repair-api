@@ -284,12 +284,6 @@ paths:
       - Reviews
       description: Get paginated list of reviews for a specific company
       parameters:
-      - name: verified_only
-        in: query
-        required: false
-        description: Show only verified reviews
-        schema:
-          type: boolean
       - name: min_rating
         in: query
         required: false
@@ -299,7 +293,8 @@ paths:
       - name: sort
         in: query
         required: false
-        description: Sort by field (rating, review_date, -rating, -review_date)
+        description: Sort by field (review_rating, review_datetime_utc, -review_rating,
+          -review_datetime_utc)
         schema:
           type: string
       - name: page
@@ -335,17 +330,28 @@ paths:
                         attributes:
                           type: object
                           properties:
-                            customer_name:
+                            author_title:
                               type: string
-                            rating:
+                            author_image:
+                              type: string
+                            review_rating:
                               type: integer
                             review_text:
                               type: string
-                            review_date:
+                            review_datetime_utc:
                               type: string
-                              format: date
-                            verified_review:
-                              type: boolean
+                              format: datetime
+                            review_link:
+                              type: string
+                            review_img_urls:
+                              type: array
+                              items:
+                                type: string
+                            owner_answer:
+                              type: string
+                            owner_answer_timestamp_datetime_utc:
+                              type: string
+                              format: datetime
                         relationships:
                           type: object
                         links:

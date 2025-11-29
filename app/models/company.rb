@@ -16,7 +16,7 @@ class Company < ApplicationRecord
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: { scope: :city_id }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validates :site, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
+  validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :logo_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
   validates :booking_appointment_link, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) },
                                        allow_blank: true
@@ -62,6 +62,11 @@ class Company < ApplicationRecord
       self.total_reviews = 0
     end
     save
+  end
+
+  def full_address
+    parts = [street_address, city.name, state.name, zip_code].compact
+    parts.join(', ')
   end
 
   private

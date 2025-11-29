@@ -6,23 +6,6 @@ FactoryBot.define do
     position { 0 }
     image_type { 'before' }
 
-    after(:build) do |gallery_image|
-      gallery_image.image.attach(
-        io: StringIO.new('fake image content'),
-        filename: 'test_image.png',
-        content_type: 'image/png'
-      )
-    end
-
-    trait :with_image do
-      after(:build) do |gallery_image|
-        gallery_image.image.attach(
-          io: StringIO.new('fake image content'),
-          filename: 'test_image.png',
-          content_type: 'image/png'
-        )
-      end
-    end
 
     trait :ordered do
       sequence(:position)

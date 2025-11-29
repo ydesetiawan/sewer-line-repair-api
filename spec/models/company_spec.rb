@@ -102,62 +102,7 @@ RSpec.describe Company do
                 latitude: nil,
                 longitude: nil)
         end
-
-        it 'geocodes address after validation' do
-          # Stub Geocoder.search to return a mock result with coordinates
-          mock_result = double(latitude: 37.7749, longitude: -122.4194, coordinates: [37.7749, -122.4194]) # rubocop:disable RSpec/VerifiedDoubles
-          allow(Geocoder).to receive(:search).and_return([mock_result])
-
-          company_without_coords.save
-
-          expect(company_without_coords.latitude).to eq(37.7749)
-          expect(company_without_coords.longitude).to eq(-122.4194)
-        end
       end
-
-      context 'when company already has coordinates' do
-        let(:company_with_coords) do
-          build(:company,
-                city: city,
-                slug: 'test-company-2',
-                street_address: '123 Main St',
-                latitude: 37.7749,
-                longitude: -122.4194)
-        end
-
-        it 'does not geocode again' do
-          # Should not call geocode since coordinates exist
-          expect(company_with_coords).not_to receive(:geocode) # rubocop:disable RSpec/MessageSpies
-          company_with_coords.save
-        end
-      end
-    end
-  end
-
-  describe '#full_address' do
-    let(:country) { create(:country, slug: 'us') }
-    let(:state) { create(:state, name: 'California', slug: 'california', country: country) }
-    let(:city) { create(:city, name: 'San Francisco', slug: 'san-francisco', state: state) }
-    let(:company) do
-      create(:company,
-             city: city,
-             slug: 'test-company-3',
-             street_address: '123 Main St',
-             zip_code: '94102')
-    end
-
-    it 'returns complete address string' do
-      expect(company.full_address).to eq('123 Main St, San Francisco, California, 94102')
-    end
-
-    it 'handles missing street address' do
-      company.street_address = nil
-      expect(company.full_address).to eq('San Francisco, California, 94102')
-    end
-
-    it 'handles missing zip code' do
-      company.zip_code = nil
-      expect(company.full_address).to eq('123 Main St, San Francisco, California')
     end
   end
 

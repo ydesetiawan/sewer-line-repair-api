@@ -49,5 +49,11 @@ Rails.application.routes.draw do
         resources :companies, only: [:index]
       end
     end
+
+    namespace :backoffice do
+      namespace :v1 do
+        post 'import_companies', to: 'import_companies#create'
+      end
+    end
   end
 end

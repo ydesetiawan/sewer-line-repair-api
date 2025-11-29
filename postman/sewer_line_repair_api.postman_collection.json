@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "sewer-line-repair-api-collection",
+		"name": "Sewer Line Repair API",
+		"description": "Collection for Sewer Line Repair API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Backoffice",
+			"item": [
+				{
+					"name": "Import Companies",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "CSV file containing company data"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/backoffice/v1/import_companies",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"backoffice",
+								"v1",
+								"import_companies"
+							]
+						},
+						"description": "Import companies from a CSV file. The file should contain columns for company details, location, and services."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}

@@ -47,6 +47,7 @@ Welcome to the Sewer Line Repair API project!
    - Error handling
    - Example endpoints
    - Testing with curl
+   - **[CSV_IMPORT_API.md](CSV_IMPORT_API.md)** (CSV Import API)
 
 ### Database & Seeding
 

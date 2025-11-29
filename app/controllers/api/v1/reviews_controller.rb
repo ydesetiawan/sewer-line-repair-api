@@ -5,22 +5,17 @@ module Api
 
       # GET /api/v1/companies/:company_id/reviews
       def index
-        reviews = @company.reviews
+        reviews = Review
 
-        # Apply filters
-        reviews = filter_by_verification(reviews)
         reviews = filter_by_rating(reviews)
 
         # Apply sorting
         reviews = apply_sorting(reviews)
 
-        # Calculate rating distribution
-        rating_distribution = calculate_rating_distribution(@company.reviews)
+        reviews = reviews.page(params[:page].presence&.to_i || 1)
+                         .per(params[:per_page].presence&.to_i || 50)
 
-        render_jsonapi_collection(
-          reviews,
-          meta: { rating_distribution: rating_distribution }
-        )
+        render_collection(ReviewSerializer, reviews)
       end
 
       private
@@ -28,11 +23,6 @@ module Api
       def set_company
         @company = Company.find_by(id: params[:company_id])
         render_error('Company not found', :not_found) unless @company
-      end
-
-      def filter_by_verification(reviews)
-        # Verification field removed - just return all reviews
-        reviews
       end
 
       def filter_by_rating(reviews)

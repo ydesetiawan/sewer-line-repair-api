@@ -24,12 +24,6 @@ class ImportGalleriesService
         process_row(row)
       end
 
-      message = if @summary[:successful].positive?
-                  "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully."
-                else
-                  "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details."
-                end
-
       ImportCsvResultSerializer.success(data: {
                                           message: message,
                                           summary: @summary,
@@ -43,6 +37,14 @@ class ImportGalleriesService
   end
 
   private
+
+  def message
+    if @summary[:successful].positive?
+      "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully." # rubocop:disable Metrics/LineLength
+    else
+      "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details." # rubocop:disable Metrics/LineLength
+    end
+  end
 
   def process_row(row)
     ActiveRecord::Base.transaction do

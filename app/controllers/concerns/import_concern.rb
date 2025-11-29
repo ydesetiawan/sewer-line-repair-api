@@ -17,7 +17,8 @@ module ImportConcern
     end
 
     # Validate file type
-    unless file.respond_to?(:content_type) && (file.content_type == 'text/csv' || file.original_filename.end_with?('.csv'))
+    unless file.respond_to?(:content_type) &&
+           (file.content_type == 'text/csv' || file.original_filename.end_with?('.csv'))
       render_error(ErrorInfo::INVALID_FILE_FORMAT, service_name, :bad_request)
       return false
     end

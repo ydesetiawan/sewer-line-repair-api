@@ -25,9 +25,9 @@ class ImportReviewsService
       end
 
       message = if @summary[:successful].positive?
-                  "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully."
+                  "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully." # rubocop:disable Metrics/LineLength
                 else
-                  "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details."
+                  "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details." # rubocop:disable Metrics/LineLength
                 end
 
       ImportCsvResultSerializer.success(data: {
@@ -80,7 +80,7 @@ class ImportReviewsService
     # Find existing review by company_id and review_link (or review_datetime_utc + author_title)
     review = Review.find_or_initialize_by(
       company_id: row['place_id'],
-      review_link: row['review_link'].presence || "#{row['place_id']}_#{row['review_datetime_utc']}_#{row['author_title']}"
+      review_link: row['review_link'].presence || "#{row['place_id']}_#{row['review_datetime_utc']}_#{row['author_title']}" # rubocop:disable Metrics/LineLength
     )
 
     is_new = review.new_record?

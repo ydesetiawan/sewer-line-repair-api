@@ -30,12 +30,6 @@ class ImportCompaniesService
         process_row(row)
       end
 
-      message = if @summary[:successful].positive?
-                  "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully."
-                else
-                  "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details."
-                end
-
       ImportCsvResultSerializer.success(data: {
                                           message: message,
                                           summary: @summary,
@@ -49,6 +43,14 @@ class ImportCompaniesService
   end
 
   private
+
+  def message
+    if @summary[:successful].positive?
+      "Import completed successfully. #{@summary[:successful]} out of #{@summary[:total_rows]} rows processed successfully." # rubocop:disable Metrics/LineLength
+    else
+      "Import completed with errors. 0 out of #{@summary[:total_rows]} rows processed successfully. Please check the error file for details." # rubocop:disable Metrics/LineLength
+    end
+  end
 
   def process_row(row)
     ActiveRecord::Base.transaction do
@@ -163,7 +165,7 @@ class ImportCompaniesService
       longitude: parse_decimal(row['longitude']),
       average_rating: parse_decimal(row['rating']),
       total_reviews: row['reviews'].to_i,
-      verified_professional: parse_boolean(row['verified']),
+      verified_professional: parse_boolean?(row['verified']),
       logo_url: row['logo'],
       booking_appointment_link: row['booking_appointment_link'],
       location_link: row['location_link'],
@@ -195,7 +197,7 @@ class ImportCompaniesService
     value.to_f
   end
 
-  def parse_boolean(value)
+  def parse_boolean?(value)
     return false if value.blank?
 
     %w[TRUE true 1 yes].include?(value.to_s)

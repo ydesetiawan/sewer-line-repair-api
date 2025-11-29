@@ -12,8 +12,6 @@ class Company < ApplicationRecord
   has_one :state, through: :city
   has_one :country, through: :state
   has_many :reviews, dependent: :destroy
-  has_many :company_service_areas, dependent: :destroy
-  has_many :service_areas, through: :company_service_areas, source: :city
   has_many :company_services, dependent: :destroy
   has_many :service_categories, through: :company_services
   has_many :gallery_images, dependent: :destroy

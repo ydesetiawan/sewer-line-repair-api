@@ -19,7 +19,6 @@ Rails.logger.debug { "  URL Path: #{company.url_path}" }
 Rails.logger.debug { "  Reviews: #{company.reviews.count}" }
 Rails.logger.debug { "  Average Rating: #{company.average_rating}" }
 Rails.logger.debug { "  Service Categories: #{company.service_categories.pluck(:name).join(', ')}" }
-Rails.logger.debug { "  Service Areas: #{company.service_areas.pluck(:name).join(', ')}" }
 Rails.logger.debug { "  Gallery Images: #{company.gallery_images.count}" }
 Rails.logger.debug { "  Certifications: #{company.certifications.count}" }
 

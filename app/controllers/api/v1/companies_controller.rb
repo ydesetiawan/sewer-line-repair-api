@@ -31,7 +31,7 @@ module Api
       def show
         company = Company.includes(
           :city, :state, :country, :reviews, :service_categories,
-          :gallery_images, :certifications, :service_areas
+          :gallery_images, :certifications
         ).find_by(slug: params[:id])
 
         if company

@@ -101,16 +101,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
     t.index ["name"], name: "index_companies_on_name"
   end
 
-  create_table "company_service_areas", force: :cascade do |t|
-    t.bigint "city_id", null: false
-    t.string "company_id", limit: 255, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["city_id"], name: "index_company_service_areas_on_city_id"
-    t.index ["company_id", "city_id"], name: "index_company_service_areas_on_company_id_and_city_id", unique: true
-    t.index ["company_id"], name: "index_company_service_areas_on_company_id"
-  end
-
   create_table "company_services", force: :cascade do |t|
     t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
@@ -185,8 +175,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   add_foreign_key "certifications", "companies"
   add_foreign_key "cities", "states"
   add_foreign_key "companies", "cities"
-  add_foreign_key "company_service_areas", "cities"
-  add_foreign_key "company_service_areas", "companies"
   add_foreign_key "company_services", "companies"
   add_foreign_key "company_services", "service_categories"
   add_foreign_key "gallery_images", "companies"

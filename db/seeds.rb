@@ -5,7 +5,6 @@ Rails.logger.debug 'Clearing existing data...'
 Certification.destroy_all
 GalleryImage.destroy_all
 CompanyService.destroy_all
-CompanyServiceArea.destroy_all
 Review.destroy_all
 Company.destroy_all
 ServiceCategory.destroy_all
@@ -111,12 +110,6 @@ cities.each_with_index do |city, idx| # rubocop:disable Metrics/BlockLength
   ServiceCategory.order('RANDOM()').limit(rand(2..4)).each do |category|
     company.company_services.create!(service_category: category)
   end
-
-  # Add service areas (nearby cities)
-  nearby_cities = cities.select { |c| c.state_id == city.state_id && c.id != city.id }
-  nearby_cities.sample(rand(1..3)).each do |nearby_city|
-    company.company_service_areas.create!(city: nearby_city)
-  end
 end
 
 Rails.logger.debug 'Creating reviews...'
@@ -209,5 +202,4 @@ Rails.logger.debug { "Reviews: #{Review.count}" }
 Rails.logger.debug { "Gallery Images: #{GalleryImage.count}" }
 Rails.logger.debug { "Certifications: #{Certification.count}" }
 Rails.logger.debug { "Company Services: #{CompanyService.count}" }
-Rails.logger.debug { "Company Service Areas: #{CompanyServiceArea.count}" }
 Rails.logger.debug '=' * 60

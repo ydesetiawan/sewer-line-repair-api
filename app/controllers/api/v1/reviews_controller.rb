@@ -26,10 +26,12 @@ module Api
       end
 
       def filter_by_rating(reviews)
-        return reviews if params[:min_rating].blank?
+        return reviews if params[:ratings].blank?
 
-        min_rating = params[:min_rating].to_f
-        reviews.where('review_rating >= ?', min_rating) if min_rating.positive?
+        ratings = Array(params[:ratings]).map(&:to_i).select { |r| (1..5).include?(r) }
+        return reviews if ratings.empty?
+
+        reviews.where(review_rating: ratings)
       end
 
       def apply_sorting(reviews)

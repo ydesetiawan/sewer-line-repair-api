@@ -24,21 +24,14 @@ class CompanyDetailSerializer
     end
   end
 
-  attribute :reviews do |company|
-    company.reviews.map do |review|
+  attribute :gallery_images do |company|
+    company.gallery_images.map do |image|
       {
-        id: review.id,
-        author_title: review.author_title,
-        author_image: review.author_image,
-        review_text: review.review_text,
-        review_img_urls: review.review_img_urls,
-        owner_answer: review.owner_answer,
-        owner_answer_timestamp_datetime_utc: review.owner_answer_timestamp_datetime_utc,
-        review_link: review.review_link,
-        review_rating: review.review_rating,
-        review_datetime_utc: review.review_datetime_utc,
-        created_at: review.created_at,
-        updated_at: review.updated_at
+        id: image.id,
+        image_url: image.image_url,
+        thumbnail_url: image.thumbnail_url,
+        image_datetime_utc: image.image_datetime_utc,
+        video_url: image.video_url
       }
     end
   end

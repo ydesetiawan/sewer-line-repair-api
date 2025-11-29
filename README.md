@@ -66,6 +66,10 @@ bundle exec rubocop
 bundle exec brakeman
 ```
 
+## API Documentation
+
+- [Filter Reviews by Multiple Ratings](docs/api_reviews_rating_filter.md)
+
 ## Project Notes
 
 This repository is a minimal Rails API application focused on:

@@ -88,11 +88,12 @@ class ImportReviewsService
     review.assign_attributes(
       author_title: row['author_title'],
       author_image: row['author_image'],
+      review_text: row['review_text'],
       review_img_urls: parse_array(row['review_img_urls']),
       owner_answer: row['owner_answer'],
-      owner_answer_timestamp_datetime_utc: parse_datetime(row['owner_answer_timestamp_datetime_utc']),
+      owner_answer_timestamp_datetime_utc: row['owner_answer_timestamp_datetime_utc'],
       review_rating: rating,
-      review_datetime_utc: parse_datetime(row['review_datetime_utc'])
+      review_datetime_utc: row['review_datetime_utc']
     )
 
     review.save!

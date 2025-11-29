@@ -8,7 +8,6 @@ module Api
         # Apply filters
         companies = filter_by_company_name(companies)
         companies = filter_by_location(companies)
-        companies = filter_by_service_category(companies)
         companies = filter_by_verification(companies)
         companies = filter_by_rating(companies)
 
@@ -94,15 +93,6 @@ module Api
         return companies if params[:company_name].blank?
 
         companies.where('companies.name ILIKE ?', "%#{params[:company_name]}%")
-      end
-
-      def filter_by_service_category(companies)
-        return companies if params[:service_category].blank?
-
-        companies.joins(:service_categories).where(
-          'service_categories.slug = ? OR service_categories.name ILIKE ?',
-          params[:service_category], params[:service_category]
-        ).distinct
       end
 
       def filter_by_verification(companies)

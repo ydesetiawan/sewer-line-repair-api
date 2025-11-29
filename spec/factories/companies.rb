@@ -32,6 +32,18 @@ FactoryBot.define do
         'Saturday' => 'Open 24 hours'
       }
     end
+    about do
+      {
+        'overview' => 'Full-service plumbing and sewer repair company',
+        'experience_years' => 15,
+        'team_size' => 10
+      }
+    end
+    subtypes { %w[Plumbing Sewer Drain] }
+    sequence(:logo_url) { |n| "https://cdn.example.com/logos/company#{n}.png" }
+    sequence(:booking_appointment_link) { |n| "https://booking.example.com/company#{n}" }
+    borough { 'Manhattan' }
+    timezone { 'America/New_York' }
 
     trait :unverified do
       verified_professional { false }

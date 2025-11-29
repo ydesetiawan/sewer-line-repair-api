@@ -8,7 +8,8 @@ class CompanyDetailSerializer
              :latitude, :longitude, :description, :average_rating, :total_reviews,
              :verified_professional, :licensed, :insured, :background_checked,
              :certified_partner, :service_guarantee, :service_level, :specialty,
-             :working_hours, :created_at, :updated_at
+             :working_hours, :about, :subtypes, :logo_url, :booking_appointment_link,
+             :borough, :timezone, :created_at, :updated_at
 
   attribute :url_path, &:url_path
   attribute :full_address, &:full_address
@@ -28,10 +29,15 @@ class CompanyDetailSerializer
     company.reviews.map do |review|
       {
         id: review.id,
-        rating: review.rating,
-        title: review.title,
-        body: review.body,
-        reviewer_name: review.reviewer_name,
+        author_title: review.author_title,
+        author_image: review.author_image,
+        review_text: review.review_text,
+        review_img_urls: review.review_img_urls,
+        owner_answer: review.owner_answer,
+        owner_answer_timestamp_datetime_utc: review.owner_answer_timestamp_datetime_utc,
+        review_link: review.review_link,
+        review_rating: review.review_rating,
+        review_datetime_utc: review.review_datetime_utc,
         created_at: review.created_at,
         updated_at: review.updated_at
       }

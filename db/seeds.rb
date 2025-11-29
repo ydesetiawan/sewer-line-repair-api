@@ -114,12 +114,16 @@ end
 
 Rails.logger.debug 'Creating reviews...'
 companies.each do |company|
-  rand(5..15).times do
+  rand(5..15).times do |i|
+    review_datetime = rand(1..365).days.ago
+    has_owner_answer = [true, false, false].sample
+
     company.reviews.create!(
-      reviewer_name: ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson',
-                      'Jennifer Martinez', 'Robert Taylor', 'Lisa Anderson'].sample,
-      review_date: rand(1..365).days.ago.to_date,
-      rating: rand(3..5),
+      author_title: ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson',
+                     'Jennifer Martinez', 'Robert Taylor', 'Lisa Anderson'].sample,
+      author_image: "https://cdn.example.com/avatars/user#{rand(1..100)}.jpg",
+      review_datetime_utc: review_datetime,
+      review_rating: rand(3..5),
       review_text: [
         'Excellent service! Very professional and thorough.',
         'Quick response time and fair pricing. Highly recommend!',
@@ -130,7 +134,15 @@ companies.each do |company|
         'Fair pricing and excellent customer service.',
         "Highly skilled technicians who know what they're doing."
       ].sample,
-      verified: [true, true, true, false].sample
+      review_img_urls: rand(0..3).times.map { |j| "https://cdn.example.com/reviews/img#{rand(1..1000)}.jpg" },
+      review_link: "https://maps.google.com/reviews/#{company.id}/#{i}",
+      owner_answer: has_owner_answer ? [
+        'Thank you for your kind words!',
+        'We appreciate your feedback and are glad we could help.',
+        'Your satisfaction is our priority. Thanks for choosing us!',
+        'Thank you for the review. We look forward to serving you again.'
+      ].sample : nil,
+      owner_answer_timestamp_datetime_utc: has_owner_answer ? (review_datetime + rand(1..7).days) : nil
     )
   end
   company.update_rating!

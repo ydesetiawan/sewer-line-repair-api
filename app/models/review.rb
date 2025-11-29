@@ -3,17 +3,21 @@ class Review < ApplicationRecord
   belongs_to :company
 
   # Validations
-  validates :reviewer_name, presence: true
-  validates :review_date, presence: true
-  validates :rating, presence: true, inclusion: { in: 1..5 }, numericality: { only_integer: true }
+  validates :review_rating, presence: true, inclusion: { in: 1..5 }, numericality: { only_integer: true }
+  validates :review_link, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
+  validates :author_image, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }, allow_blank: true
 
-  after_destroy :update_company_rating
+  # Store accessor for array fields
+  attribute :review_img_urls, :string, array: true, default: -> { [] }
+
   # Callbacks
   after_save :update_company_rating
+  after_destroy :update_company_rating
 
   # Scopes
-  scope :verified, -> { where(verified: true) }
-  scope :recent, -> { order(review_date: :desc) }
+  scope :recent, -> { order(review_datetime_utc: :desc) }
+  scope :top_rated, -> { where('review_rating >= ?', 4).order(review_rating: :desc) }
+  scope :with_owner_answer, -> { where.not(owner_answer: nil) }
 
   private
 

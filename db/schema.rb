@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_29_072829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,8 +70,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   end
 
   create_table "companies", id: { type: :string, limit: 255 }, force: :cascade do |t|
+    t.jsonb "about", default: {}
     t.decimal "average_rating", precision: 3, scale: 2, default: "0.0"
     t.boolean "background_checked", default: false
+    t.string "booking_appointment_link"
+    t.string "borough"
     t.boolean "certified_partner", default: false
     t.bigint "city_id", null: false
     t.datetime "created_at", null: false
@@ -80,6 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
     t.boolean "insured", default: false
     t.decimal "latitude", precision: 10, scale: 6
     t.boolean "licensed", default: false
+    t.string "logo_url"
     t.decimal "longitude", precision: 10, scale: 6
     t.string "name", null: false
     t.string "phone"
@@ -88,6 +92,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
     t.string "slug", null: false
     t.string "specialty"
     t.string "street_address"
+    t.text "subtypes", default: [], array: true
+    t.string "timezone", default: "UTC"
     t.integer "total_reviews", default: 0
     t.datetime "updated_at", null: false
     t.boolean "verified_professional", default: false
@@ -135,18 +141,23 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_055437) do
   end
 
   create_table "reviews", force: :cascade do |t|
+    t.string "author_image"
+    t.string "author_title"
     t.string "company_id", limit: 255, null: false
     t.datetime "created_at", null: false
-    t.integer "rating", null: false
-    t.date "review_date", null: false
+    t.text "owner_answer"
+    t.datetime "owner_answer_timestamp_datetime_utc"
+    t.datetime "review_datetime_utc"
+    t.text "review_img_urls", default: [], array: true
+    t.string "review_link"
+    t.integer "review_rating"
     t.text "review_text"
-    t.string "reviewer_name", null: false
     t.datetime "updated_at", null: false
-    t.boolean "verified", default: false
-    t.index ["company_id", "review_date"], name: "index_reviews_on_company_id_and_review_date"
+    t.index ["company_id", "review_datetime_utc"], name: "index_reviews_on_company_id_and_review_datetime_utc"
     t.index ["company_id"], name: "index_reviews_on_company_id"
-    t.index ["rating"], name: "index_reviews_on_rating"
-    t.check_constraint "rating >= 1 AND rating <= 5", name: "rating_range"
+    t.index ["review_datetime_utc"], name: "index_reviews_on_review_datetime_utc"
+    t.index ["review_rating"], name: "index_reviews_on_review_rating"
+    t.check_constraint "review_rating >= 1 AND review_rating <= 5", name: "review_rating_range"
   end
 
   create_table "service_categories", force: :cascade do |t|

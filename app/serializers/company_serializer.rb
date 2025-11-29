@@ -8,7 +8,8 @@ class CompanySerializer
              :latitude, :longitude, :description, :average_rating, :total_reviews,
              :verified_professional, :licensed, :insured, :background_checked,
              :certified_partner, :service_guarantee, :service_level, :specialty,
-             :working_hours, :created_at, :updated_at
+             :working_hours, :about, :subtypes, :logo_url, :booking_appointment_link,
+             :borough, :timezone, :created_at, :updated_at
 
   attribute :url_path, &:url_path
 

@@ -23,17 +23,5 @@ class CompanyDetailSerializer
       }
     end
   end
-
-  attribute :gallery_images do |company|
-    company.gallery_images.map do |image|
-      {
-        id: image.id,
-        image_url: image.image_url,
-        thumbnail_url: image.thumbnail_url,
-        image_datetime_utc: image.image_datetime_utc,
-        video_url: image.video_url
-      }
-    end
-  end
 end
 # frozen_string_literal: true

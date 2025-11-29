@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       resources :companies, only: [:show] do
         # Nested routes for company relationships
         resources :reviews, only: [:index]
-        resources :gallery_images, only: [:index]
+        resources :galleries, only: [:index]
       end
 
       resources :locations do

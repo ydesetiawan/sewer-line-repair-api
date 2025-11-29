@@ -3,7 +3,7 @@ module Api
     class CompaniesController < BaseController
       # GET /api/v1/companies/search
       def search
-        companies = Company.includes(:city, :state, :country, :service_categories)
+        companies = Company.includes(:city, :state, :country)
 
         # Apply filters
         companies = filter_by_company_name(companies)
@@ -29,8 +29,7 @@ module Api
       # GET /api/v1/companies/:id
       def show
         company = Company.includes(
-          :city, :state, :country, :reviews, :service_categories,
-          :gallery_images
+          :city, :state, :country
         ).find_by(slug: params[:id])
 
         if company

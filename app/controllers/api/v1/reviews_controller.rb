@@ -1,11 +1,9 @@
 module Api
   module V1
     class ReviewsController < BaseController
-      before_action :set_company
-
       # GET /api/v1/companies/:company_id/reviews
       def index
-        reviews = Review
+        reviews = Review.where(company_id: params[:company_id])
 
         reviews = filter_by_rating(reviews)
 
@@ -19,11 +17,6 @@ module Api
       end
 
       private
-
-      def set_company
-        @company = Company.find_by(id: params[:company_id])
-        render_error('Company not found', :not_found) unless @company
-      end
 
       def filter_by_rating(reviews)
         return reviews if params[:ratings].blank?
@@ -45,17 +38,6 @@ module Api
         else
           reviews.order(review_datetime_utc: :desc)
         end
-      end
-
-      def calculate_rating_distribution(reviews)
-        distribution = reviews.group(:review_rating).count
-        {
-          '5': distribution[5] || 0,
-          '4': distribution[4] || 0,
-          '3': distribution[3] || 0,
-          '2': distribution[2] || 0,
-          '1': distribution[1] || 0
-        }
       end
     end
   end

@@ -4,6 +4,7 @@ class CreateReviews < ActiveRecord::Migration[8.1]
       t.string :company_id, limit: 255, null: false, index: true
       t.string :author_title
       t.string :author_image
+      t.text :review_text
       t.text :review_img_urls, array: true, default: []
       t.text :owner_answer
       t.datetime :owner_answer_timestamp_datetime_utc

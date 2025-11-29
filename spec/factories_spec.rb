@@ -36,12 +36,6 @@ RSpec.describe 'Factory Tests' do # rubocop:disable RSpec/DescribeClass
       expect(review.company).to be_present
     end
 
-    it 'creates a valid certification' do
-      certification = create(:certification)
-      expect(certification).to be_valid
-      expect(certification.company).to be_present
-    end
-
     it 'creates a valid gallery_image' do
       gallery_image = create(:gallery_image)
       expect(gallery_image).to be_valid

@@ -65,7 +65,7 @@ class Company < ApplicationRecord
   end
 
   def full_address
-    parts = [street_address, city.name, state.name, zip_code].compact
+    parts = [street_address, city.name, state.name, postal_code].compact
     parts.join(', ')
   end
 

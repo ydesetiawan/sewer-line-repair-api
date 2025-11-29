@@ -101,6 +101,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_06_005335) do
     t.text "review_img_urls", default: [], array: true
     t.string "review_link"
     t.integer "review_rating"
+    t.text "review_text"
     t.datetime "updated_at", null: false
     t.index ["company_id", "review_datetime_utc"], name: "index_reviews_on_company_id_and_review_datetime_utc"
     t.index ["company_id"], name: "index_reviews_on_company_id"

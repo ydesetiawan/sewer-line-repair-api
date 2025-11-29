@@ -13,7 +13,7 @@ RSpec.describe Company do
                slug: 'downtown-plumbing',
                city: city,
                street_address: '100 Market St',
-               zip_code: '94105',
+               postal_code: '94105',
                latitude: 37.7749,
                longitude: -122.4194)
       end
@@ -24,7 +24,7 @@ RSpec.describe Company do
                slug: 'bay-area-repairs',
                city: city,
                street_address: '500 Howard St',
-               zip_code: '94105',
+               postal_code: '94105',
                latitude: 37.7858,
                longitude: -122.3965)
       end
@@ -35,7 +35,7 @@ RSpec.describe Company do
                slug: 'golden-gate-services',
                city: city,
                street_address: '1000 Van Ness Ave',
-               zip_code: '94109',
+               postal_code: '94109',
                latitude: 37.7877,
                longitude: -122.4205)
       end
@@ -46,7 +46,7 @@ RSpec.describe Company do
                slug: 'south-bay-plumbing',
                city: city,
                street_address: '2000 Mission St',
-               zip_code: '94110',
+               postal_code: '94110',
                latitude: 37.7625,
                longitude: -122.4189)
       end
@@ -98,7 +98,7 @@ RSpec.describe Company do
                 city: city,
                 slug: 'test-company-1',
                 street_address: '123 Main St',
-                zip_code: '94102',
+                postal_code: '94102',
                 latitude: nil,
                 longitude: nil)
         end

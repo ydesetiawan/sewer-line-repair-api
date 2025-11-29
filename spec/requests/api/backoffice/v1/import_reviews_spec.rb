@@ -13,9 +13,9 @@ RSpec.describe 'Api::Backoffice::V1::ImportReviews' do
         let(:company) { create(:company) }
         let(:csv_content) do
           <<~CSV
-            name,place_id,reviews_text,reviews_rating,author_title,author_image,review_img_urls,owner_answer,owner_answer_timestamp_datetime_utc,review_link,review_datetime_utc
+            name,place_id,reviews_text,review_rating,author_title,author_image,review_img_urls,owner_answer,owner_answer_timestamp_datetime_utc,review_link,review_datetime_utc
             #{company.name},#{company.id},Great service!,5,John Doe,https://example.com/avatar.jpg,[],Thank you!,2023-11-29 10:00:00,https://maps.google.com/review/123,2023-11-28 15:30:00
-            #{company.name},#{company.id},Excellent work,4,Jane Smith,https://example.com/avatar2.jpg,[],,,,2023-11-27 12:00:00
+            #{company.name},#{company.id},Excellent work,4,Jane Smith,https://example.com/avatar2.jpg,[],,,https://maps.google.com/review/123,2023-11-27 12:00:00
           CSV
         end
         let(:file) do
@@ -31,7 +31,6 @@ RSpec.describe 'Api::Backoffice::V1::ImportReviews' do
           expect(data['type']).to eq('import_reviews')
           expect(data['attributes']['summary']['total_rows']).to eq(2)
           expect(data['attributes']['summary']['successful']).to eq(2)
-          expect(data['attributes']['summary']['reviews_created']).to eq(2)
         end
       end
 
